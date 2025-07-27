@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>interrogation.ai - Account Management</title>
+  <link rel="stylesheet" href="../css/footer-style.css" />
+  <link rel="stylesheet" href="../css/header-style.css" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/home-style.css" />
+  <link rel="stylesheet" href="../css/account-management-style.css" />
+  <link rel="stylesheet" href="../css/account-management-style.css" />
+  <link rel="stylesheet" href="../css/cookies-style.css" />
+  
+  <link rel="icon" type="image/png" href="/images/favicon.png" sizes="any" />
+  <link rel="icon" type="image/png" href="/images/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+  <link rel="shortcut icon" href="/images/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+  <link rel="manifest" href="/images/site.webmanifest" />
+
+
+</head>
+<body>
+
+  <header class="main-header">
+    <div class="header-left">
+      <a href="../index.html" class="logo-link" aria-label="Zur Startseite">
+        <span class="logo">interrogation.ai</span>
+      </a>
+    </div>
+    
+    <div class="header-right">
+      <div class="search-container">
+        <form class="header-search-form">
+          <input type="text" placeholder="Suchen..." class="search-input">
+        </form>
+      </div>
+      <button class="menu-toggle" aria-label="Menü öffnen">
+        <span class="hamburger"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Suchergebnis-Overlay -->
+  <div class="results-backdrop" id="resultsBackdrop"></div>
+  
+  <div class="search-results-container" id="searchResults">
+    <div class="search-results-header">
+      <h3 id="resultsTitle">Suchergebnisse</h3>
+      <button class="close-results" id="closeResults">&times;</button>
+    </div>
+    <div id="resultsList"></div>
+  </div>
+
+  <nav class="main-nav">
+  <button class="close-nav" aria-label="Menü schließen">&times;</button>
+  <div class="mobile-search-container">
+    <form class="mobile-search-form">
+      <input type="text" placeholder="Suchen..." class="search-input">
+      <button type="submit" aria-label="Suchen">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+  <ul class="nav-list">
+    <li><a href="../index.html">Startseite</a></li>
+    <li class="has-submenu">
+      <a href="#" class="submenu-toggle">Tools <span class="arrow">▼</span></a>
+      <ul class="submenu">
+        <li><a href="code-helper.html">Coding Project Helper</a></li>
+        <li><a href="habit-helper.html">Habit Helper</a></li>
+        <li><a href="situational-decider.html">Situational Decider</a></li>
+        <li><a href="glücksrad.html">Random Decider</a></li>
+      </ul>
+    </li>
+    <li><a href="tools-uebersicht.html">Alle Tools</a></li>
+    <li><a href="alle-bewertungen.html">Bewertungen</a></li>
+    <li><a href="kontakt.html">Kontakt</a></li>
+    <li><a href="ueber-uns.html">Über Uns</a></li>
+    <li id="account-nav-item"></li>
+  </ul>
+</nav>
+  
+  <div class="background-container"></div>
+  
+  <div class="content-container">
+    <a class="exit-btn-account" href="../index.html">[Exit]</a>
+    <div class="container account-container">
+      <div class="account-header">
+        <h1>Account Management</h1>
+        <p>Verwalten Sie Ihre Kontoeinstellungen und persönlichen Daten</p>
+      </div>
+      
+      <div class="account-profile">
+        <div class="profile-pic">
+          <img id="profile-image" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='8' r='4' fill='%234f46e5'/><path d='M20 19v1a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6z' fill='%234f46e5'/></svg>" alt="Profil">
+          <div class="profile-pic-edit" id="editProfilePic">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="profile-info">
+          <h2 id="account-email">benutzer@email.de</h2>
+          <button id="logout-btn" class="action-btn">Abmelden</button>
+        </div>
+      </div>
+      
+      <div class="account-details-grid">
+        <div class="detail-card">
+          <h4>Account Information</h4>
+          <div class="detail-item editable" data-field="email">
+            <span class="detail-label">E-Mail:</span>
+            <span class="detail-value" id="detail-email">benutzer@email.de</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Mitglied seit:</span>
+            <span class="detail-value" id="detail-join-date">01. Januar 2025</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Letzte Anmeldung:</span>
+            <span class="detail-value" id="detail-last-login">Heute</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Kontotyp:</span>
+            <span class="detail-value" id="detail-account-type">Kostenlos</span>
+          </div>
+          
+          <div class="edit-form" id="email-edit-form">
+            <div class="form-group">
+              <label for="edit-email">Neue E-Mail Adresse</label>
+              <input type="email" id="edit-email" required>
+            </div>
+            <div class="form-group">
+              <label for="confirm-password-email">Aktuelles Passwort bestätigen</label>
+              <input type="password" id="confirm-password-email" required>
+            </div>
+            <div class="form-actions">
+              <button class="form-btn primary" id="save-email-btn">Speichern</button>
+              <button class="form-btn secondary" id="cancel-email-btn">Abbrechen</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="detail-card">
+          <h4>Konto Sicherheit</h4>
+          <div class="detail-item">
+            <span class="detail-label">Passwort:</span>
+            <span class="detail-value">••••••••</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Zwei-Faktor-Auth:</span>
+            <span class="detail-value">Inaktiv</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Sitzungen:</span>
+            <span class="detail-value">1 Aktiv</span>
+          </div>
+          
+          <div class="edit-form" id="password-edit-form">
+            <div class="form-group">
+              <label for="current-password">Aktuelles Passwort</label>
+              <input type="password" id="current-password" required>
+            </div>
+            <div class="form-group">
+              <label for="new-password">Neues Passwort</label>
+              <input type="password" id="new-password" required>
+            </div>
+            <div class="form-group">
+              <label for="confirm-password">Neues Passwort bestätigen</label>
+              <input type="password" id="confirm-password" required>
+            </div>
+            <div class="form-actions">
+              <button class="form-btn primary" id="save-password-btn">Speichern</button>
+              <button class="form-btn secondary" id="cancel-password-btn">Abbrechen</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="account-actions">
+        <h3>Account-Verwaltung</h3>
+        <div class="action-grid">
+          <div class="action-card">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+            <h4>Profil bearbeiten</h4>
+            <p>Bearbeiten Sie Ihre persönlichen Informationen und Profilbild</p>
+            <button class="action-btn" id="edit-profile-btn">Bearbeiten</button>
+          </div>
+          
+          <div class="action-card">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+            </svg>
+            <h4>Passwort ändern</h4>
+            <p>Aktualisieren Sie Ihr Passwort für mehr Sicherheit</p>
+            <button class="action-btn" id="change-password-btn">Ändern</button>
+          </div>
+          
+          <div class="action-card">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm4.93 12.94l-1.41 1.41L12 13.41l-3.52 3.52-1.41-1.41L10.59 12 7.07 8.48l1.41-1.41L12 10.59l3.52-3.52 1.41 1.41L13.41 12l3.52 3.94z"/>
+            </svg>
+            <h4>Konto löschen</h4>
+            <p>Löschen Sie dauerhaft Ihr Konto und alle zugehörigen Daten</p>
+            <button class="action-btn danger" id="delete-account-btn">Löschen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="logout-popup" id="logoutPopup">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+    </svg>
+    <h3>Erfolgreich abgemeldet</h3>
+    <p>Du hast dich erfolgreich abgemeldet.</p>
+    <button class="popup-btn" id="closeLogoutPopup">OK</button>
+  </div>
+  
+  <div class="popup-backdrop" id="deleteConfirmPopup">
+    <div class="popup-container error">
+      <div class="popup-content">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="#e53e3e">
+          <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/>
+        </svg>
+        <h3>Konto löschen bestätigen</h3>
+        <p>Sind Sie sicher, dass Sie Ihr Konto dauerhaft löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.</p>
+        <div class="form-group">
+          <label for="delete-password">Passwort zur Bestätigung</label>
+          <input type="password" id="delete-password" required>
+        </div>
+        <div class="popup-buttons">
+          <button class="popup-btn secondary" id="cancel-delete-btn">Abbrechen</button>
+          <button class="popup-btn" id="confirm-delete-btn">Konto löschen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Füge dieses Popup am Ende des body hinzu (vor dem Footer) -->
+<div class="popup-backdrop" id="profilePicOptionsPopup">
+  <div class="popup-container">
+    <div class="popup-content">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="#4f46e5">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+      </svg>
+      <h3>Profilbild ändern</h3>
+      <p>Möchten Sie Ihr aktuelles Profilbild löschen oder ein neues auswählen?</p>
+      <div class="popup-buttons">
+        <button class="popup-btn danger" id="deleteProfilePicBtn">Bild löschen</button>
+        <button class="popup-btn" id="selectNewProfilePicBtn">Neues Bild auswählen</button>
+        <button class="popup-btn secondary" id="cancelProfilePicBtn">Abbrechen</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cookie Consent Popup -->
+<div id="cookie-consent" class="cookie-popup">
+  <div class="cookie-popup-content">
+    <h3>🍪 Cookie-Einstellungen</h3>
+    <p>Wir verwenden Cookies, um Ihnen die bestmögliche Erfahrung auf unserer Webseite zu bieten. Mit Klick auf "Akzeptieren" stimmen Sie der Verwendung aller Cookies zu.</p>
+    <div class="cookie-buttons">
+      <button id="cookie-decline" class="cookie-btn decline">Nicht akzeptieren</button>
+      <button id="cookie-accept" class="cookie-btn accept">Alle akzeptieren</button>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy Policy Popup -->
+<div id="privacy-popup" class="cookie-popup" style="display:none">
+  <div class="cookie-popup-content">
+    <h3>🔒 Datenschutzerklärung (Auszug)</h3>
+    <div class="privacy-content">
+      <p>Wir respektieren Ihre Privatsphäre. Hier eine Übersicht unserer Cookie-Nutzung:</p>
+      <ul>
+        <li><strong>Notwendige Cookies:</strong> Für grundlegende Funktionen der Website (immer aktiv)</li>
+        <li><strong>Funktionale Cookies:</strong> Zur Verbesserung der Benutzererfahrung</li>
+        <li><strong>Analytische Cookies:</strong> Zur Analyse des Nutzerverhaltens</li>
+      </ul>
+      <p>Ihre Daten werden gemäß unserer <a href="datenschutz.html">Datenschutzrichtlinie</a> verarbeitet.</p>
+    </div>
+    <div class="cookie-buttons">
+      <button id="privacy-accept-necessary" class="cookie-btn accept">Nur notwendige Cookies</button>
+    </div>
+  </div>
+</div>
+
+  <footer class="main-footer">
+    <!-- Gleicher Footer wie in index.html -->
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>interrogation.ai</h3>
+        <p>Wir haben das Verhältnis zu künstliche Intelligenz umgedreht.</p>
+      </div>
+      
+      <div class="footer-links">
+        <div class="link-column">
+          <h4>Top Tools:</h4>
+          <ul>
+            <li><a href="code-helper.html">Coding Project Helper</a></li>
+            <li><a href="habit-helper.html">Habit Helper</a></li>
+            <li><a href="situational-decider.html">Situational Decider</a></li>
+          </ul>
+        </div>
+        
+        <div class="link-column">
+          <h4>Informationen</h4>
+          <ul>
+            <li><a href="ueber-uns.html">Über Uns</a></li>
+            <li><a href="kontakt.html">Kontakt</a></li>
+            <li><a href="tools-uebersicht.html">Alle Tools</a></li>
+            <li><a href="alle-bewertungen.html">Bewertungen</a></li>
+            
+          </ul>
+        </div>
+        
+        <div class="link-column">
+          <h4>Rechtliches</h4>
+          <ul>
+            <li><a href="impressum.html">Impressum</a></li>
+            <li><a href="datenschutz.html">Datenschutz</a></li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 interrogation.ai - Alle Rechte vorbehalten</p>
+      <div class="social-icons">
+        <a href="#" aria-label="YouTube">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+          </svg>
+        </a>
+        <a href="#" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/header-script.js"></script>
+  <script src="../js/account-management-script.js"></script>
+  <script src="../js/cookies-script.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,566 @@
+/* Verbesserte Account-Management-Seite */
+.account-container {
+  max-width: 900px;
+  margin-top: 30px;
+}
+
+.account-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #c7d2fe;
+}
+
+.account-header h1 {
+  color: #4f46e5;
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.account-header p {
+  color: #4b5563;
+  font-size: 1.1rem;
+}
+
+.account-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+
+.profile-pic {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 1.5rem;
+  position: relative;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #e0e7ff;
+  border: 3px solid #c7d2fe;
+}
+
+.profile-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-pic-edit {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #4f46e5;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: all 0.3s;
+}
+
+.profile-pic-edit:hover {
+  background: #4338ca;
+  transform: scale(1.1);
+}
+
+.profile-pic-edit svg {
+  width: 16px;
+  height: 16px;
+  fill: white;
+}
+
+.profile-info {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.profile-info h2 {
+  color: #4f46e5;
+  font-size: 1.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.account-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.detail-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.8rem;
+  box-shadow: 0 6px 15px rgba(79, 70, 229, 0.1);
+  border-top: 4px solid #4f46e5;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.detail-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(79, 70, 229, 0.15);
+}
+
+.detail-card h4 {
+  color: #4f46e5;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 2px solid #e0e7ff;
+  font-size: 1.4rem;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.detail-value {
+  color: #1f2937;
+  font-weight: 600;
+  text-align: right;
+  max-width: 60%;
+}
+
+.editable .detail-value {
+  cursor: pointer;
+  position: relative;
+  padding-right: 20px;
+  transition: color 0.3s;
+}
+
+.editable .detail-value:hover {
+  color: #4f46e5;
+}
+
+.editable .detail-value:after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%234f46e5"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>');
+  background-size: contain;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.editable .detail-value:hover:after {
+  opacity: 1;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.action-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+  border: 2px solid #e0e7ff;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.action-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 20px rgba(79, 70, 229, 0.15);
+  border-color: #c7d2fe;
+}
+
+.action-card svg {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 1.5rem;
+  padding: 12px;
+  background: #e0e7ff;
+  border-radius: 50%;
+  fill: #4f46e5;
+  transition: all 0.3s;
+}
+
+.action-card:hover svg {
+  background: #4f46e5;
+  fill: white;
+  transform: scale(1.1);
+}
+
+.action-card h4 {
+  color: #4f46e5;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  transition: color 0.3s;
+}
+
+.action-card:hover h4 {
+  color: #4338ca;
+}
+
+.action-card p {
+  color: #4b5563;
+  margin-bottom: 1.8rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+.action-btn {
+  padding: 0.8rem 1.5rem;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 100%;
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+.action-btn:hover {
+  background: #4338ca;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+}
+
+.action-btn.danger {
+  background: #e53e3e;
+}
+
+.action-btn.danger:hover {
+  background: #c53030;
+  box-shadow: 0 4px 8px rgba(229, 62, 62, 0.3);
+}
+
+.edit-form {
+  display: none;
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #4b5563;
+  font-weight: 500;
+  text-align: left;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.9rem;
+  border: 2px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #818cf8;
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+.form-btn {
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-width: 120px;
+}
+
+.form-btn.primary {
+  background: #4f46e5;
+  color: white;
+  border: none;
+}
+
+.form-btn.primary:hover {
+  background: #4338ca;
+  transform: translateY(-2px);
+}
+
+.form-btn.secondary {
+  background: transparent;
+  color: #4b5563;
+  border: 1px solid #d1d5db;
+}
+
+.form-btn.secondary:hover {
+  background: #f3f4f6;
+  transform: translateY(-2px);
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 768px) {
+  .account-container {
+    padding: 1.5rem;
+    margin-top: 50px;
+  }
+  
+  .profile-pic {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .action-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-card {
+    padding: 1.8rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .form-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .account-container {
+    padding: 1rem;
+  }
+  
+  .detail-card {
+    padding: 1.5rem;
+  }
+  
+  .action-card {
+    padding: 1.5rem;
+  }
+  
+  .account-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .profile-info h2 {
+    font-size: 1.4rem;
+  }
+}
+
+/* Zusätzliche Styles für Profilbild-Popup */
+#profilePicOptionsPopup .popup-container {
+  max-width: 450px;
+  text-align: center;
+}
+
+#profilePicOptionsPopup .popup-content svg {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 1rem;
+  fill: #4f46e5;
+}
+
+#profilePicOptionsPopup .popup-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 1.5rem;
+}
+
+#profilePicOptionsPopup .popup-btn {
+  width: 100%;
+  text-align: center;
+  padding: 0.9rem;
+}
+
+#profilePicOptionsPopup .popup-btn.danger {
+  background: #e53e3e;
+}
+
+#profilePicOptionsPopup .popup-btn.danger:hover {
+  background: #c53030;
+}
+
+/* Allgemeine Popup-Styles */
+.popup-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  display: none;
+}
+
+.popup-container {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 500px;
+}
+
+/* Stil für das Popup im Fehlerfall (wie deleteConfirmPopup) */
+.popup-container.error {
+  border-top: 4px solid #e53e3e;
+}
+
+.exit-btn-account {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-family: 'Courier New', Courier, monospace;
+  color: #e0e7ff;
+  background-color: transparent;
+  border: 2px solid #e0e7ff;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-bottom: 50px;
+}
+
+.exit-btn-account:hover {
+  background-color: #e0e7ff;
+  color: white;
+}
+
+/* Füge diese Media-Query-Regeln am Ende der Datei hinzu */
+@media (max-width: 480px) {
+  .exit-btn-account {
+    top: 1.5rem; /* Mehr Abstand nach oben */
+    margin-bottom: 100px; /* Vergrößerter Abstand nach unten */
+  }
+  
+  .content-container {
+    padding-top: 50px; /* Zusätzlicher Abstand für den Container */
+  }
+}
+
+@media (max-width: 768px) {
+  .exit-btn-account {
+    margin-bottom: 100px; /* Für mittlere Bildschirme */
+  }
+}
+
+/* Füge dies zur CSS-Datei hinzu */
+.profile-info h2 {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.detail-item .detail-value {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+/* Füge diese Regeln am Ende der Datei hinzu */
+.logout-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  border-top: 6px solid #10b981;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.logout-popup.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.logout-popup svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1rem;
+  fill: #10b981;
+}
+
+.logout-popup h3 {
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.logout-popup p {
+  color: #4b5563;
+  margin-bottom: 1.5rem;
+}
+
+.logout-popup .popup-btn {
+  padding: 0.8rem 1.5rem;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.logout-popup .popup-btn:hover {
+  background: #4338ca;
+}

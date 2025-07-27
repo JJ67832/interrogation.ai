@@ -1,0 +1,99 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #818cf8, #4f46e5);
+            overflow: hidden;
+        }
+
+        .error-container {
+            width: 85%;
+            max-width: 800px;
+            padding: 2.5rem;
+            background-color: #f3f4f6;
+            border: 3px solid #4f46e5;
+            box-shadow: 6px 6px 0px #9ca3af;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .error-container h1 {
+            font-size: 2.8rem;
+            color: #4f46e5;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px #9ca3af;
+        }
+
+        .error-container p {
+            font-size: 1.3rem;
+            color: #4b5563;
+            margin-bottom: 2rem;
+        }
+
+        .home-btn {
+            display: inline-block;
+            padding: 0.9rem 2.5rem;
+            font-size: 1.2rem;
+            color: #f3f4f6;
+            background-color: #4f46e5;
+            border: 2px solid #9ca3af;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .home-btn:hover {
+            background-color: #818cf8;
+            box-shadow: 3px 3px 0px #1f2937;
+            transform: translate(-2px, -2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .error-container {
+                width: 90%;
+                padding: 2rem;
+            }
+
+            .error-container h1 {
+                font-size: 2.2rem;
+            }
+
+            .error-container p {
+                font-size: 1.1rem;
+            }
+
+            .home-btn {
+                padding: 0.7rem 2rem;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .error-container {
+                width: 95%;
+                padding: 1.5rem;
+            }
+
+            .error-container h1 {
+                font-size: 1.8rem;
+            }
+
+            .error-container p {
+                font-size: 1rem;
+            }
+
+            .home-btn {
+                padding: 0.6rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }

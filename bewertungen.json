@@ -1,0 +1,78 @@
+{
+  "ratingValue": 4.4,
+  "reviewCount": 12,
+  "reviews": [
+    {
+      "author": "Lena",
+      "date": "2025-06-15",
+      "rating": 5,
+      "comment": "Die KI-Tools von interrogation.ai haben mir in verschiedenen Lebensbereichen geholfen. Besonders der Habit Helper und Situational Decider sind meine Favoriten!"
+    },
+    {
+      "author": "Felix",
+      "date": "2025-06-18",
+      "rating": 3,
+      "comment": "Nützlich, aber die Ergebnisse sind nicht immer treffsicher. Manchmal bekomme ich irrelevante Fragen, egal welches Tool ich nutze."
+    },
+    {
+      "author": "Sophie",
+      "date": "2025-06-20",
+      "rating": 4,
+      "comment": "Die Kombination aus technischen und persönlichen Tools macht interrogation.ai einzigartig. Mein Favorit ist der Situational Decider!"
+    },
+    {
+      "author": "Tobias",
+      "date": "2025-06-25",
+      "rating": 5,
+      "comment": "Absolut unverzichtbar für meinen Alltag! Die Tools helfen mir sowohl bei beruflichen als auch privaten Entscheidungen."
+    },
+    {
+      "author": "Jan",
+      "date": "2025-06-26",
+      "rating": 4,
+      "comment": "Solide Plattform für verschiedene Herausforderungen. Besonders nützlich für komplexe Probleme, die strukturiertes Denken erfordern."
+    },
+    {
+      "author": "Mira",
+      "date": "2025-06-27",
+      "rating": 5,
+      "comment": "Hat mir geholfen, sowohl technische als auch persönliche Blockaden zu überwinden. Die präzisen Fragen führen immer zum Kern des Problems!"
+    },
+    {
+      "author": "Niklas",
+      "date": "2025-06-28",
+      "rating": 5,
+      "comment": "Habe innerhalb von Minuten Lösungen für verschiedene Problemtypen gefunden. Die Plattform ist mein erster Anlaufpunkt geworden!"
+    },
+    {
+      "author": "Emilia",
+      "date": "2025-06-29",
+      "rating": 5,
+      "comment": "Die Vielfalt der Tools ist beeindruckend. Egal ob Coding, Gewohnheiten oder Entscheidungen - interrogation.ai hat für alles eine Lösung."
+    },
+    {
+      "author": "Marc",
+      "date": "2025-06-30",
+      "rating": 4,
+      "comment": "Gute Hilfe bei verschiedenen Herausforderungen. Die Antworten sind immer gut durchdacht und helfen mir, klarer zu denken."
+    },
+    {
+      "author": "Laura",
+      "date": "2025-07-01",
+      "rating": 4,
+      "comment": "Tolles Konzept mit unterschiedlichen Tools, die alle nahtlos zusammenarbeiten. Hat mir schon in vielen Situationen geholfen!"
+    },
+    {
+      "author": "Johannes Plaschke",
+      "rating": 4,
+      "comment": "hallo test ",
+      "date": "2025-07-03"
+    },
+    {
+      "author": "Rainer Winkler",
+      "rating": 5,
+      "comment": "Interrogation AI ist unglaublich vielseitig und hat mir schon oft geholfen",
+      "date": "2025-07-03"
+    }
+  ]
+}

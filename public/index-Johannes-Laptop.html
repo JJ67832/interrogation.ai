@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>interrogation.ai - Dein KI Problemlöser</title>
+  <link rel="stylesheet" href="./css/footer-style.css" />
+  <link rel="stylesheet" href="./css/header-style.css" />
+  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/home-style.css" />
+  <link rel="stylesheet" href="./css/cookies-style.css" />
+
+  <!-- Ändere alle Favicon-Pfade von ./images/ zu /images/ -->
+  <link rel="icon" type="ico" href="/images/favicon.png" />
+  <link rel="icon" type="image/png" href="/images/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+  <link rel="shortcut icon" href="/images/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+  <link rel="manifest" href="/images/site.webmanifest" />
+
+
+
+</head>
+<body>
+
+  <header class="main-header">
+    <div class="header-left">
+      <a href="../index.html" class="logo-link" aria-label="Zur Startseite">
+        <span class="logo">interrogation.ai</span>
+      </a>
+    </div>
+    
+    <div class="header-right">
+      <div class="search-container">
+        <form class="header-search-form">
+          <input type="text" placeholder="Suchen..." class="search-input">
+        </form>
+      </div>
+      <button class="menu-toggle" aria-label="Menü öffnen">
+        <span class="hamburger"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Suchergebnis-Overlay -->
+  <div class="results-backdrop" id="resultsBackdrop"></div>
+  
+  <div class="search-results-container" id="searchResults">
+    <div class="search-results-header">
+      <h3 id="resultsTitle">Suchergebnisse</h3>
+      <button class="close-results" id="closeResults">&times;</button>
+    </div>
+    <div id="resultsList"></div>
+  </div>
+
+  <nav class="main-nav">
+  <button class="close-nav" aria-label="Menü schließen">&times;</button>
+  <div class="mobile-search-container">
+    <form class="mobile-search-form">
+      <input type="text" placeholder="Suchen..." class="search-input">
+      <button type="submit" aria-label="Suchen">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+  <ul class="nav-list">
+    <li><a href="index.html">Startseite</a></li>
+    <li class="has-submenu">
+      <a href="#" class="submenu-toggle">Tools <span class="arrow">▼</span></a>
+      <ul class="submenu">
+        <li><a href="./html/code-helper.html">Coding Project Helper</a></li>
+        <li><a href="#">Habit Helper</a></li>
+        <li><a href="#">Situational Decider</a></li>
+        <li><a href="#">Random Decider</a></li>
+      </ul>
+    </li>
+    <li><a href="./html/kontakt.html">Kontakt</a></li>
+    <li><a href="./html/ueber-uns.html">Über Uns</a></li>
+    <li><a href="#">Preise</a></li>
+    <li id="account-nav-item"></li>
+  </ul>
+</nav>
+  
+
+  <div class="background-container"></div>
+  
+  <!-- Startseiten-Spezifischer Content -->
+  <div class="content-container">
+     <div class="main-search-container">
+      <h1>Fragen statt Grübeln – unsere KI bringt dein Gedächtnis in Schwung</h1>
+      <p class="search-subtitle">Beschreibe dein Problem und wir finden das passende Tool</p>
+      
+      <div class="hero-search">
+        <input type="text" 
+               placeholder="z.B. 'Mir fällt es schwer meinen Alltag zu restrukturieren'" 
+               id="main-search">
+        <button id="search-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+        </button>
+        <!-- Dropdown für Suchergebnisse -->
+        <div class="search-results-dropdown" id="search-results"></div>
+      </div>
+      
+      <div class="search-examples">
+        <h3>Beispiele:</h3>
+        <div class="examples-grid">
+          <div class="example-card">
+            <p class="problem">"Ich möchte eine tägliche Meditationsroutine aufbauen"</p>
+            <p class="solution">→ <span>Habit Helper</span></p>
+          </div>
+          <div class="example-card">
+            <p class="problem">"Soll ich das Jobangebot annehmen oder weitersuchen?"</p>
+            <p class="solution">→ <span>Situational Decider</span></p>
+          </div>
+          <div class="example-card">
+            <p class="problem">"Ich brauche Hilfe beim Debuggen meiner React-Komponente"</p>
+            <p class="solution">→ <span>Coding Project Helper</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+
+    <!-- Neue Statistik-Sektion -->
+    <div class="stats-section">
+    <div class="section-header">
+        <h2>Unsere Community in Zahlen</h2>
+        <div class="highlight-bar"></div>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+        <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05.02.05.03.09.04.14.96.69 1.63 1.78 1.63 3.06V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+              <circle cx="18" cy="8" r="2" fill="#4f46e5"/>
+            </svg>
+        </div>
+        <div class="stat-number" id="active-users">240</div>
+        <div class="stat-label">Aktive Nutzer</div>
+        </div>
+        
+        <div class="stat-card">
+        <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4 8-8z"/>
+              <path d="M16.59 7.58L10 14.17l-2.59-2.58L6 13l4 4 8-8z" fill="#4f46e5"/>
+            </svg>
+        </div>
+        <div class="stat-number" id="total-visitors">13.568</div>
+        <div class="stat-label">Besucher insgesamt</div>
+        </div>
+        
+        <div class="stat-card">
+        <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z"/>
+            </svg>
+        </div>
+        <div class="stat-number" id="total-inputs">90.902</div>
+        <div class="stat-label">Eingaben insgesamt</div>
+        </div>
+    </div>
+    </div>
+
+    <div class="tools-section">
+      <div class="section-header">
+        <h2>Unsere KI-Tools</h2>
+        <div class="highlight-bar"></div>
+      </div>
+      
+      <div class="tools-grid">
+        <div class="tool-card">
+          <div class="tool-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
+            </svg>
+          </div>
+          <h3>Coding Project Helper</h3>
+          <p>Wenn sich deine Fehlermeldungen stapeln und dein Code vor Unübersichtlichkeit nur strotzt, dann bist du hier richtig.</p>
+          <a href="./html/code-helper.html" class="tool-btn">Tool starten</a>
+        </div>
+        
+        <div class="tool-card">
+          <div class="tool-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+              <path d="M16 14.14l-1.86-1.86L13 14l3 3 6-6-1.41-1.42z" fill="#4f46e5"/>
+            </svg>
+          </div>
+          <h3>Habit Helper</h3>
+          <p>Baue bessere Gewohnheiten auf, tracke deine Fortschritte und erhalte personalisierte Tipps.</p>
+          <a href="./html/habit-helper.html" class="tool-btn">Tool starten</a>
+        </div>
+        
+        <div class="tool-card">
+          <div class="tool-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M10 3h4v2h-4zM3 7h18v2H3zM10 11h4v2h-4zM3 15h18v2H3zM10 19h4v2h-4z"/>
+              <circle cx="7.5" cy="7.5" r="1.5" fill="#4f46e5"/>
+              <circle cx="7.5" cy="15.5" r="1.5" fill="#4f46e5"/>
+              <circle cx="16.5" cy="11.5" r="1.5" fill="#4f46e5"/>
+            </svg>
+          </div>
+          <h3>Situational Decider</h3>
+          <p>Treffe bessere Entscheidungen durch strukturierte Analyse deiner Optionen und Prioritäten.</p>
+          <a href="#" class="tool-btn">Tool starten</a>
+        </div>
+        
+        <div class="tool-card">
+          <div class="tool-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6s1.5.67 1.5 1.5S17.33 9 16.5 9z"/>
+            </svg>
+          </div>
+          <h3>Random Decider</h3>
+          <p>Lass den Zufall entscheiden oder generiere zufällige Optionen bei Entscheidungsblockaden.</p>
+          <a href="#" class="tool-btn">Tool starten</a>
+        </div>
+      </div>
+    </div>
+
+<!-- Korrigierte Signup-Sektion -->
+<div class="signup-section">
+  <div class="section-header">
+    <h2>Anmelden</h2>
+    <div class="highlight-bar"></div>
+  </div>
+  
+  <div class="signup-container">
+    <div class="signup-card">
+      <h3>Zugang zu allen KI-Tools</h3>
+      <p class="signup-subtitle">Melde dich an, um alle Funktionen zu nutzen</p>
+      
+      <div class="signup-options">
+        <button class="google-signup" id="google-login-btn">
+          <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z" fill="#4285F4"/>
+          </svg>
+          Mit Google anmelden
+        </button>
+
+        
+        <div class="divider">
+          <span>oder</span>
+        </div>
+        
+        <form class="email-signup" id="login-form">
+          <div class="input-group">
+            <label for="login-email">E-Mail</label>
+            <input type="email" id="login-email" placeholder="deine@email.de" required>
+          </div>
+          
+          <div class="input-group">
+            <label for="login-password">Passwort</label>
+            <div class="password-container">
+              <input type="password" id="login-password" placeholder="••••••••" required>
+              <button type="button" class="toggle-password">
+                <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                  <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <button type="submit" class="signup-btn">Anmelden</button>
+        </form>
+      </div>
+      
+      <div class="signup-footer">
+        <p>Noch kein Konto? <a href="/html/account.html" class="login-link">Registrieren</a></p>
+      </div>
+    </div>
+    
+    <!-- Benefits Card innerhalb des Containers -->
+    <div class="benefits-card">
+      <h3>Vorteile der Registrierung</h3>
+      <ul class="benefits-list">
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+          </svg>
+          <span>Unbegrenzte Nutzung aller KI-Tools</span>
+        </li>
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+          </svg>
+          <span>Erweiterte Funktionen & längere Antworten</span>
+        </li>
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+          </svg>
+          <span>Persönliche Verlaufshistorie</span>
+        </li>
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+          </svg>
+          <span>Exklusive Vorab-Features</span>
+        </li>
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+          </svg>
+          <span>Verkürzte Wartezeiten</span>
+        </li>
+        <li>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+          </svg>
+          <span>Kostenlose Update Benachrichtigungen</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Füge dies NACH der pricing-section ein -->
+<div class="faq-section">
+  <div class="section-header">
+    <h2>Häufig gestellte Fragen</h2>
+    <div class="highlight-bar"></div>
+  </div>
+  
+  <div class="faq-container">
+    <div class="faq-item">
+      <details>
+        <summary>
+          <span>Welchen Vorteil erlange ich mit einem Konto?</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="chevron">
+            <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+          </svg>
+        </summary>
+        <div class="faq-content">
+          <p>Wenn du noch kein kostenloses Konto erstellt hast, dann sind deine Anfragen limitiert auf 5 pro Tool am Tag. Durch die Anmeldung erhälst du unlimitierten Zugriff auf alle Tools.</p>
+        </div>
+      </details>
+    </div>
+    
+    <div class="faq-item">
+      <details>
+        <summary>
+          <span>Kann ich den Plan später wechseln?</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="chevron">
+            <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+          </svg>
+        </summary>
+        <div class="faq-content">
+          <p>Ja, du kannst jederzeit zwischen den Plänen wechseln. Ein Upgrade ist sofort wirksam, ein Downgrade wird am Ende deines aktuellen Abrechnungszeitraums aktiv.</p>
+        </div>
+      </details>
+    </div>
+    
+    <div class="faq-item">
+      <details>
+        <summary>
+          <span>Warum ist Interrogation AI komplett kostenlos?</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="chevron">
+            <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+          </svg>
+        </summary>
+        <div class="faq-content">
+          <p>Dieses Tool ist Non-Profit und der Ersteller erhält keine finanziellen Bereicherungen durch ihre Nutzung. Es werden weder Abonnements, Daten oder sontiges verkauft. Vielmehr geht es darum zu expemimentieren wie einfach es für jedermann seien kann sein eigenes KI-Tool zu erstellen.</p>
+        </div>
+      </details>
+    </div>
+    
+    <div class="faq-item">
+      <details>
+        <summary>
+          <span>Wie kann ich mein Konto löschen?</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="chevron">
+            <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+          </svg>
+        </summary>
+        <div class="faq-content">
+          <p>Du kannst dein Konto jederzeit in deinem Account-Bereich kündigen. Der Zugriff erfolgt über den Navigationsbereich.</p>
+        </div>
+      </details>
+    </div>
+    
+    <div class="faq-item">
+      <details>
+        <summary>
+          <span>Werden meine Daten geschützt?</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="chevron">
+            <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+          </svg>
+        </summary>
+        <div class="faq-content">
+          <p>Ja, Datenschutz hat für uns höchste Priorität. Alle Daten werden verschlüsselt übertragen und gespeichert. Wir verwenden deine Daten ausschließlich zur Bereitstellung unserer Dienste und geben sie nicht an Dritte weiter.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+  
+  <div class="faq-footer">
+    <p>Du hast weitere Fragen? <a href="./html/kontakt.html">Kontaktiere unser Support-Team</a></p>
+  </div>
+</div>
+
+
+  </div>
+
+  <footer class="main-footer">
+    <!-- Gleicher Footer wie in index.html -->
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>interrogation.ai</h3>
+        <p>Wir haben das Verhältnis zu künstliche Intelligenz umgedreht.</p>
+      </div>
+      
+      <div class="footer-links">
+        <div class="link-column">
+          <h4>Tools</h4>
+          <ul>
+            <li><a href="/html/code-helper.html">Coding Project Helper</a></li>
+            <li><a href="#">Habit Helper</a></li>
+            <li><a href="#">Situational Decider</a></li>
+          </ul>
+        </div>
+        
+        <div class="link-column">
+          <h4>Informationen</h4>
+          <ul>
+            <li><a href="./html/ueber-uns.html">Über Uns</a></li>
+            <li><a href="./html/kontakt.html">Kontakt</a></li>
+            <li><a href="#">Preise</a></li>
+          </ul>
+        </div>
+        
+        <div class="link-column">
+          <h4>Rechtliches</h4>
+          <ul>
+            <li><a href="#">Impressum</a></li>
+            <li><a href="./html/datenschutz.html">Datenschutz</a></li>
+            <li><a href="#">AGB</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 interrogation.ai - Alle Rechte vorbehalten</p>
+      <div class="social-icons">
+        <a href="#" aria-label="YouTube">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+          </svg>
+        </a>
+        <a href="#" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cookie Consent Popup -->
+<div id="cookie-consent" class="cookie-popup">
+  <div class="cookie-popup-content">
+    <h3>🍪 Cookie-Einstellungen</h3>
+    <p>Wir verwenden Cookies, um Ihnen die bestmögliche Erfahrung auf unserer Webseite zu bieten. Mit Klick auf "Akzeptieren" stimmen Sie der Verwendung aller Cookies zu.</p>
+    <div class="cookie-buttons">
+      <button id="cookie-decline" class="cookie-btn decline">Nicht akzeptieren</button>
+      <button id="cookie-accept" class="cookie-btn accept">Alle akzeptieren</button>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy Policy Popup -->
+<div id="privacy-popup" class="cookie-popup" style="display:none">
+  <div class="cookie-popup-content">
+    <h3>🔒 Datenschutzerklärung (Auszug)</h3>
+    <div class="privacy-content">
+      <p>Wir respektieren Ihre Privatsphäre. Hier eine Übersicht unserer Cookie-Nutzung:</p>
+      <ul>
+        <li><strong>Notwendige Cookies:</strong> Für grundlegende Funktionen der Website (immer aktiv)</li>
+        <li><strong>Funktionale Cookies:</strong> Zur Verbesserung der Benutzererfahrung</li>
+        <li><strong>Analytische Cookies:</strong> Zur Analyse des Nutzerverhaltens</li>
+      </ul>
+      <p>Ihre Daten werden gemäß unserer <a href="./html/datenschutz.html">Datenschutzrichtlinie</a> verarbeitet.</p>
+    </div>
+    <div class="cookie-buttons">
+      <button id="privacy-accept-necessary" class="cookie-btn accept">Nur notwendige Cookies</button>
+    </div>
+  </div>
+</div>
+
+
+  <script src="./js/header-script.js"></script>
+  <script src="./js/home-script.js"></script>
+  <script src="./js/cookies-script.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'950acf4f6b833516',t:'MTc1MDA4MjE3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

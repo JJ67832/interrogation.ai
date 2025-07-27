@@ -1,0 +1,476 @@
+/* Header Styles */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #e0e7ff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.logo {
+  color: #4f46e5;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.search-container {
+  position: relative;
+  /* Container hat keine Umrandung mehr */
+}
+
+.search-input {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 2px solid #4f46e5; /* Nur diese Umrandung in der gewünschten Farbe */
+  background-color: white;
+  width: 200px;
+  transition: width 0.3s, box-shadow 0.3s;
+}
+
+.search-input:focus {
+  width: 250px;
+  outline: none;
+  box-shadow:#4f46e5;
+}
+
+.menu-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  position: relative;
+}
+
+.hamburger {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background-color: #4f46e5;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.hamburger::before,
+.hamburger::after {
+  content: '';
+  position: absolute;
+  width: 25px;
+  height: 3px;
+  background-color: #4f46e5;
+  left: 0;
+  transition: all 0.3s;
+}
+
+.hamburger::before {
+  top: -8px;
+}
+
+.hamburger::after {
+  top: 8px;
+}
+
+/* Navigation Styles */
+.main-nav {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  height: 100%;
+  background-color: #e0e7ff;
+  z-index: 1000;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+}
+
+.main-nav.open {
+  right: 0;
+}
+
+.close-nav {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #4f46e5;
+}
+
+.nav-list {
+  list-style: none;
+  padding: 4rem 2rem;
+}
+
+.nav-list li {
+  margin-bottom: 1.5rem;
+}
+
+.nav-list a {
+  text-decoration: none;
+  color: #333;
+  font-size: 1.2rem;
+  transition: color 0.2s;
+}
+
+.nav-list a:hover {
+  color: #4f46e5;
+}
+
+/* BREITERE NAVIGATION FÜR DESKTOP (350px statt 300px) */
+@media (min-width: 768px) {
+  .search-input:focus {
+    width: 250px;
+  }
+  
+  .main-nav {
+    width: 350px; /* Breite erhöht auf 350px */
+    right: -350px; /* Entsprechend angepasst */
+    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+  }
+  
+  .main-nav.open {
+    right: 0;
+  }
+  
+  /* Optional: Größeren Text für breitere Navigation */
+  .nav-list {
+    padding: 3rem 2rem;
+  }
+  
+  .nav-list a {
+    font-size: 1.25rem;
+    padding: 0.5rem 0;
+    display: block;
+  }
+}
+
+/* Anpassung für Mobile */
+@media (max-width: 767px) {
+  .search-container {
+    display: none;
+  }
+  
+  .nav-list {
+    padding: 3rem 1.5rem;
+  }
+}
+
+/* Padding für Content anpassen */
+.content-container {
+  padding-top: 80px;
+}
+
+/* Submenu Styling */
+.has-submenu {
+  position: relative;
+}
+
+.submenu-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.arrow {
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+  transition: transform 0.3s;
+}
+
+.submenu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  padding-left: 1.5rem;
+  list-style: none;
+}
+
+.submenu.open {
+  max-height: 500px; /* Genug Platz für alle Items */
+}
+
+@media (min-width: 768px) {
+  .has-submenu:hover .submenu {
+    max-height: 500px;
+  }
+  
+  .has-submenu:hover .arrow {
+    transform: rotate(180deg);
+  }
+}
+
+/* Mobile Submenu Toggle */
+.submenu-toggle.active + .submenu {
+  max-height: 500px;
+}
+
+.submenu-toggle.active .arrow {
+  transform: rotate(180deg);
+}
+
+.search-results-container {
+      display: none;
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 800px;
+      max-height: 70vh;
+      overflow-y: auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      z-index: 1000;
+      padding: 20px;
+    }
+    
+    .search-results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #e0e7ff;
+      padding-bottom: 10px;
+    }
+    
+    .close-results {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #4f46e5;
+    }
+    
+    .result-item {
+      padding: 15px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .result-item:hover {
+      background-color: #f5f7ff;
+    }
+    
+    .result-title {
+      color: #4f46e5;
+      margin-bottom: 5px;
+    }
+    
+    .result-description {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    .no-results {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+    
+    .results-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+    }
+
+    /* Mobile-Suche im Menü */
+.mobile-search-container {
+  display: none;
+  padding: 1rem;
+  border-top: 1px solid #d1d5db;
+  margin-top: 4rem;
+}
+
+.mobile-search-form {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  border: 2px solid #4f46e5;
+}
+
+.mobile-search-form .search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.mobile-search-form button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Nur auf mobilen Geräten anzeigen */
+@media (max-width: 767px) {
+  .mobile-search-container {
+    display: block;
+  }
+  
+  .header-right .search-container {
+    display: none;
+  }
+}
+
+/* Optional: Abstand zwischen Menü und Suche */
+@media (min-width: 768px) {
+  .mobile-search-container {
+    display: none;
+  }
+}
+
+.nav-account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-profile-pic {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #e0e7ff;
+}
+
+.nav-profile-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 768px) {
+  .nav-account span {
+    display: none;
+  }
+  
+  .nav-profile-pic {
+    width: 25px;
+    height: 25px;
+  }
+}
+
+.nav-account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background 0.3s;
+}
+
+.nav-account:hover {
+  background: rgba(79, 70, 229, 0.1);
+}
+
+.nav-profile-pic {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #e0e7ff;
+}
+
+.nav-profile-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.account-link {
+  text-decoration: none;
+  color: #1e293b;
+}
+
+/* Textkürzung für lange E-Mail-Adressen */
+.nav-account span {
+  display: inline-block;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 768px) {
+  .nav-account span {
+    display: none;
+  }
+  
+  .nav-profile-pic {
+    width: 25px;
+    height: 25px;
+  }
+}
+
+/* Änderung in den Responsive-Regeln */
+@media (max-width: 768px) {
+  /* Nur den Text im Header ausblenden, nicht im Menü */
+  .header-right .nav-account span {
+    display: none;
+  }
+
+  /* Text im mobilen Menü anzeigen mit mehr Platz */
+  .main-nav .nav-account span {
+    display: inline-block !important;
+    max-width: 200px; /* Erhöhte Breite für längeren Text */
+    color: #4b5563;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    font-size: 1.1rem; /* Größere Schrift */
+  }
+}
+
+/* Neue Regel für bessere Sichtbarkeit und mehr Platz */
+.nav-list #account-nav-item .account-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.75rem 0; /* Mehr vertikaler Platz */
+}
+
+.nav-list #account-nav-item .nav-profile-pic {
+  background: #c7d2fe;
+  flex-shrink: 0; /* Verhindert Schrumpfen des Icons */
+}
+
+/* Anpassung des Menü-Layouts für mehr Platz */
+@media (max-width: 767px) {
+  .nav-list {
+    padding: 2rem 1.5rem; /* Weniger Padding für mehr Platz */
+  }
+  
+  .nav-list li {
+    margin-bottom: 1.2rem; /* Weniger Abstand zwischen Einträgen */
+  }
+  
+  .main-nav .nav-account span {
+    max-width: 65vw; /* Prozentuale Breite für maximale Ausnutzung */
+  }
+}

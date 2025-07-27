@@ -1,0 +1,708 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+html, body {
+  width: 100%;
+  overflow: auto;
+  height: auto;
+}
+
+body {
+  position: relative;
+}
+
+.background-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('https://img.freepik.com/vektoren-premium/vektorbild-mit-blauem-gradienten-hintergrund-fuer-hintergrund-oder-praesentation_1110513-3091.jpg') no-repeat center center;
+  background-size: cover;
+  z-index: -1;
+  opacity: 0.55;
+}
+
+.content-container {
+  position: relative;
+  z-index: 1;
+  padding: 2rem 0;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  padding: 2rem;
+  background-color: #e0e7ff;
+  border: 4px solid #4f46e5;
+  box-shadow: 4px 4px 0px #818cf8;
+  border-radius: 8px;
+}
+
+.container h1 {
+  font-size: 2.5rem;
+  color: #4f46e5;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  text-shadow: 1px 1px #000;
+}
+
+form label {
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #4f46e5;
+}
+
+input[type="text"],
+textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px inset #4f46e553;
+  background-color: #f0f0f0;
+  font-size: 1.1rem;
+  margin-top: 0.3rem;
+  font-family: inherit;
+}
+
+/* Stile für die Formular-Buttons */
+.form-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin: 1.5rem auto;
+}
+
+#submit-btn {
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  border: 2px solid #4f46e5;
+  background-color: #4f46e5;
+  color: white;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+#submit-btn:hover {
+  background-color: #4338ca;
+}
+
+#reset-btn {
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  border: 2px solid #e53e3e;
+  background-color: #e53e3e;
+  color: white;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+#reset-btn:hover {
+  background-color: #c53030;
+}
+
+#loading {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+  border: 6px solid #ccc;
+  border-top: 6px solid #4f46e5;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 0.5rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.hidden {
+  display: none;
+}
+
+#response-container {
+  margin-top: 2rem;
+  padding: 0;
+  border: 4px solid #4f46e5;
+  border-radius: 8px;
+  background: #e0e7ff;
+  box-shadow: 6px 6px 0px #818cf8;
+}
+
+.response-header {
+  background: #e0e7ff;
+  padding: 1rem;
+  position: relative;
+}
+
+.response-header h2 {
+  color: #4f46e5;
+  text-align: center;
+  font-size: 1.8rem;
+  text-shadow: 2px 2px #c4c4c4;
+}
+
+.highlight-bar {
+  height: 6px;
+  background: #4f46e5;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.questions-output {
+  padding: 1.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #a5a5a5 #f0f0f0;
+}
+
+.questions-output::-webkit-scrollbar {
+  width: 12px;
+}
+
+.questions-output::-webkit-scrollbar-track {
+  background: #c7d2fe;
+  border-radius: 6px;
+}
+
+.questions-output::-webkit-scrollbar-thumb {
+  background-color: #4f46e5;
+  border-radius: 6px;
+  border: 2px solid #c7d2fe;
+}
+
+.questions-output::-webkit-scrollbar-thumb:hover {
+  background-color: #4338ca;
+}
+
+.question-item {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 1.2rem;
+  align-items: flex-start;
+}
+
+.question-number {
+  background: #4f46e5;
+  color: white;
+  font-weight: bold;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.question-text {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: #000000;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 1rem;
+  border-top: 2px dashed #4f46e553;
+  background: #c7d2fe;
+}
+
+.action-buttons button {
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border: 2px solid #4f46e5;
+  background-color: #4f46e5;
+  color: white;
+  font-weight: bold;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.action-buttons button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#copy-btn {
+  background: #4f46e5;
+}
+
+#new-btn {
+  background: #10b981;
+}
+
+/* Stile für den Regenerieren-Button */
+#regen-btn {
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #4f46e5;
+  background: #4f46e5;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+#regen-btn:hover {
+  transform: rotate(360deg);
+  background: #4338ca;
+}
+
+#regen-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: white;
+}
+
+.tips-container {
+  width: 100%;
+  margin-top: 2rem;
+  padding: 0;
+  border: 4px solid #10b981;
+  border-radius: 8px;
+  background: #d1fae5;
+  box-shadow: 6px 6px 0px #34d399;
+}
+
+.tips-header {
+  background: #d1fae5;
+  padding: 1rem;
+  position: relative;
+}
+
+.tips-header h2 {
+  color: #047857;
+  text-align: center;
+  font-size: 1.8rem;
+  text-shadow: 1px 1px #c4c4c4;
+}
+
+.tips-header .highlight-bar {
+  height: 6px;
+  background: #10b981;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.tips-content {
+  padding: 1.5rem;
+  color: #064e3b;
+}
+
+.tips-content ul {
+  margin-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.tips-content li {
+  margin-bottom: 0.8rem;
+  line-height: 1.5;
+}
+
+.tips-content p {
+  background: #a7f3d0;
+  padding: 1rem;
+  border-left: 4px solid #047857;
+  font-style: italic;
+}
+
+@media (max-width: 1200px) {
+  .container {
+    width: 95%;
+    padding: 1.5rem;
+  }
+
+  .container h1 {
+    font-size: 2rem;
+  }
+
+  .questions-output {
+    max-height: 350px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 1.2rem;
+    margin: 0 auto 2rem;
+  }
+
+  .container h1 {
+    font-size: 1.8rem;
+  }
+
+  input[type="text"],
+  textarea {
+    padding: 0.6rem;
+    font-size: 1rem;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+  }
+
+  #submit-btn, #reset-btn {
+    width: 100%;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+  }
+
+  .questions-output {
+    max-height: 300px;
+  }
+
+  .response-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .tips-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .content-container {
+    padding: 1rem 0;
+  }
+  
+  #regen-btn {
+    width: 36px;
+    height: 36px;
+  }
+  
+  #regen-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    width: 98%;
+    padding: 1rem;
+    margin: 0 auto 1rem;
+  }
+
+  .container h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  form label {
+    font-size: 0.9rem;
+  }
+
+  input[type="text"],
+  textarea {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  #submit-btn, #reset-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .questions-output {
+    max-height: 250px;
+  }
+
+  .response-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .question-text {
+    font-size: 1rem;
+  }
+
+  .action-buttons {
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .action-buttons button {
+    width: auto;
+    padding: 0.6rem;
+  }
+
+  #regen-btn {
+    width: 32px;
+    height: 32px;
+  }
+  
+  #regen-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .tips-header h2 {
+    font-size: 1.3rem;
+  }
+  
+  .tips-content li {
+    font-size: 0.9rem;
+  }
+  
+  .content-container {
+    padding: 0.5rem 0;
+  }
+}
+
+/* Verlauf-Sektion */
+#history-section {
+  margin-top: 2rem;
+  padding: 0;
+  border: 4px solid #f59e0b;
+  border-radius: 8px;
+  background: #fef3c7;
+  box-shadow: 6px 6px 0px #fbbf24;
+}
+
+.history-actions {
+  padding: 1rem;
+  background: #fef3c7;
+  border-bottom: 2px solid #fbbf24;
+  text-align: center;
+}
+
+#clear-history {
+  padding: 0.5rem 1rem;
+  background: #f59e0b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#history-container {
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.history-entry {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border: 2px solid #fcd34d;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #fcd34d;
+}
+
+.history-date {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.history-project {
+  font-weight: bold;
+  color: #b45309;
+}
+
+.history-questions p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.load-history {
+  margin-top: 0.5rem;
+  padding: 0.3rem 0.8rem;
+  background: #f59e0b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.empty-history {
+  text-align: center;
+  font-style: italic;
+  color: #6b7280;
+  padding: 1rem;
+}
+
+@media (max-width: 768px) {
+  #history-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.exit-btn {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-family: 'Courier New', Courier, monospace;
+  color: #e0e7ff;
+  background-color: transparent;
+  border: 2px solid #e0e7ff;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.exit-btn:hover {
+  background-color: #e0e7ff;
+  color: white;
+}
+
+/* Füge dies zu deinem CSS hinzu */
+.logo-link {
+  display: inline-block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* Optional: Hover-Effekt beibehalten */
+.logo-link:hover .logo {
+  opacity: 0.8;
+}
+
+/* Nutzungszähler */
+.usage-counter {
+  text-align: center;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: #4f46e5;
+  color: white;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+/* Stile für Anfragezähler */
+.request-counter {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 8px 15px;
+  margin: 15px 0;
+  text-align: center;
+  font-size: 14px;
+}
+
+.request-counter.limit-reached {
+  background: #fff3cd;
+  border-color: #ffeeba;
+  color: #856404;
+}
+
+.request-counter.hidden {
+  display: none;
+}
+
+.unlimited-notice {
+  color: #28a745;
+  font-weight: bold;
+  margin: -10px 0 15px 0;
+  font-size: 0.9em;
+}
+
+/* Stile für Limit-Popup */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup.hidden {
+  display: none;
+}
+
+.popup-content {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  text-align: center;
+}
+
+.popup-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.popup-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#register-btn {
+  background: #28a745;
+  color: white;
+}
+
+#close-popup {
+  background: #6c757d;
+  color: white;
+}
+
+.countdown {
+  font-weight: bold;
+  margin: 15px 0;
+  font-size: 1.2em;
+  text-align: center;
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 768px) {
+  .popup-content {
+    padding: 20px;
+  }
+  
+  .popup-buttons {
+    flex-direction: column;
+  }
+}

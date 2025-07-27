@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bewertungen - interrogation.ai</title>
+  <link rel="stylesheet" href="../css/header-style.css" />
+  <link rel="stylesheet" href="../css/footer-style.css" />
+  <link rel="stylesheet" href="../css/alle-bewertungen-style.css" />
+  <link rel="stylesheet" href="../css/cookies-style.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/home-style.css">
+
+  <link rel="icon" type="image/png" href="/images/favicon.png" sizes="any" />
+  <link rel="icon" type="image/png" href="/images/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+  <link rel="shortcut icon" href="/images/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+  <link rel="manifest" href="/images/site.webmanifest" />
+</head>
+<body>
+  <header class="main-header">
+    <div class="header-left">
+      <a href="../index.html" class="logo-link" aria-label="Zur Startseite">
+        <span class="logo">interrogation.ai</span>
+      </a>
+    </div>
+    
+    <div class="header-right">
+      <div class="search-container">
+        <form class="header-search-form">
+          <input type="text" placeholder="Suchen..." class="search-input">
+        </form>
+      </div>
+      <button class="menu-toggle" aria-label="Menü öffnen">
+        <span class="hamburger"></span>
+      </button>
+    </div>
+  </header>
+
+  <nav class="main-nav">
+    <button class="close-nav" aria-label="Menü schließen">&times;</button>
+    <div class="mobile-search-container">
+      <form class="mobile-search-form">
+        <input type="text" placeholder="Suchen..." class="search-input">
+        <button type="submit" aria-label="Suchen">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+    <ul class="nav-list">
+      <li><a href="../index.html">Startseite</a></li>
+      <li class="has-submenu">
+        <a href="#" class="submenu-toggle">Tools <span class="arrow">▼</span></a>
+        <ul class="submenu">
+          <li><a href="./code-helper.html">Coding Project Helper</a></li>
+          <li><a href="habit-helper.html">Habit Helper</a></li>
+          <li><a href="situational-decider.html">Situational Decider</a></li>
+          <li><a href="./glücksrad.html">Random Decider</a></li>
+        </ul>
+      </li>
+      <li><a href="./tools-uebersicht.html">Alle Tools</a></li>
+      <li><a href="./alle-bewertungen.html">Bewertungen</a></li>
+      <li><a href="./kontakt.html">Kontakt</a></li>
+      <li><a href="./ueber-uns.html">Über Uns</a></li>
+      <li id="account-nav-item"></li>
+    </ul>
+  </nav>
+  
+  <!-- Neuer Hintergrund-Container -->
+  <div class="background-container"></div>
+    <!-- Neuer Haupt-Container -->
+    <div class="main-content-container">
+      <!-- Neue Karten-Container -->
+      <div class="content-card">
+        <div class="reviews-container">
+          <div class="section-header">
+            <h2>Nutzerbewertungen</h2>
+            <div class="highlight-bar"></div>
+            <p class="section-subtitle">Was unsere Community über interrogation.ai sagt</p>
+          </div>
+
+          <div class="filter-bar">
+            <div class="filter-group">
+              <label for="rating-filter">Bewertung filtern:</label>
+              <select id="rating-filter" class="filter-select">
+                <option value="0">Alle Bewertungen</option>
+                <option value="5">★★★★★ (5 Sterne)</option>
+                <option value="4">★★★★☆ (4 Sterne)</option>
+                <option value="3">★★★☆☆ (3 Sterne)</option>
+                <option value="2">★★☆☆☆ (2 Sterne)</option>
+                <option value="1">★☆☆☆☆ (1 Stern)</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label for="sort-by">Sortieren nach:</label>
+              <select id="sort-by" class="filter-select">
+                <option value="newest">Neueste zuerst</option>
+                <option value="oldest">Älteste zuerst</option>
+                <option value="highest">Höchste Bewertung</option>
+                <option value="lowest">Niedrigste Bewertung</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label for="search-author">Autor suchen:</label>
+              <input type="text" id="search-author" class="filter-input" placeholder="Name eingeben">
+            </div>
+
+            <button id="apply-filters" class="filter-btn">Filter anwenden</button>
+            <button id="reset-filters" class="filter-btn reset-btn">Zurücksetzen</button>
+          </div>
+
+          <div id="reviews-grid" class="reviews-grid">
+            <!-- Bewertungen werden hier dynamisch eingefügt -->
+          </div>
+
+          <div class="load-more-container">
+            <button id="load-more-btn" class="load-more-btn">Mehr Bewertungen laden</button>
+          </div>
+
+          <div class="add-review-section">
+            <h3>Deine Bewertung hinzufügen</h3>
+            
+            <form id="review-form">
+              <div class="form-group">
+                <label for="review-author">Dein Name</label>
+                <input type="text" id="review-author" class="form-control" required>
+              </div>
+              
+              <div class="form-group">
+                <label>Deine Bewertung</label>
+                <div class="stars-input">
+                  <!-- Verbesserte Sternbewertung mit umgekehrter Reihenfolge -->
+                  <input type="radio" id="star1" name="rating" value="1" class="star-input">
+                  <label for="star1" class="star-label">★</label>
+                  
+                  <input type="radio" id="star2" name="rating" value="2" class="star-input">
+                  <label for="star2" class="star-label">★</label>
+                  
+                  <input type="radio" id="star3" name="rating" value="3" class="star-input">
+                  <label for="star3" class="star-label">★</label>
+                  
+                  <input type="radio" id="star4" name="rating" value="4" class="star-input">
+                  <label for="star4" class="star-label">★</label>
+                  
+                  <input type="radio" id="star5" name="rating" value="5" class="star-input">
+                  <label for="star5" class="star-label">★</label>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="review-comment">Dein Kommentar</label>
+                <textarea id="review-comment" class="form-control" rows="4" required></textarea>
+              </div>
+              
+              <button type="submit" class="submit-btn">Bewertung absenden</button>
+              <div id="form-message" class="form-message"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ <footer class="main-footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>interrogation.ai</h3>
+        <p>Wir haben das Verhältnis zu künstliche Intelligenz umgedreht.</p>
+      </div>
+      
+      <div class="footer-links">
+        <div class="link-column">
+          <h4>Top Tools:</h4>
+          <ul>
+            <li><a href="./code-helper.html">Coding Project Helper</a></li>
+            <li><a href="habit-helper.html">Habit Helper</a></li>
+            <li><a href="situational-decider.html">Situational Decider</a></li>
+          </ul>
+        </div>
+        
+        <div class="link-column">
+          <h4>Informationen</h4>
+          <ul>
+            <li><a href="./ueber-uns.html">Über Uns</a></li>
+            <li><a href="./kontakt.html">Kontakt</a></li>
+            <li><a href="./tools-uebersicht.html">Alle Tools</a></li>
+            <li><a href="alle-bewertungen.html">Bewertungen</a></li>
+          </ul>
+        </div>
+        
+        <div class="link-column">
+          <h4>Rechtliches</h4>
+          <ul>
+            <li><a href="./impressum.html">Impressum</a></li>
+            <li><a href="./datenschutz.html">Datenschutz</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 interrogation.ai - Alle Rechte vorbehalten</p>
+      <div class="social-icons">
+        <a href="#" aria-label="YouTube">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+          </svg>
+        </a>
+        <a href="#" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z" fill="#4285F4"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/alle-bewertungen-script.js"></script>
+  <script src="../js/header-script.js"></script>
+  <script src="../js/cookies-script.js"></script>
+</body>
+</html>

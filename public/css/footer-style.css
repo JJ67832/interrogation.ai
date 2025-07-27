@@ -1,0 +1,134 @@
+/* Füge diesen Code am Ende von style.css hinzu */
+.main-footer {
+  background-color: #e0e7ff;
+  color: white;
+  padding: 2rem 1rem;
+  position: relative;
+  z-index: 1;
+  border-top: 4px solid #818cf8;
+  box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+  margin-top: 100px;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.footer-section {
+  flex: 1;
+  min-width: 250px;
+}
+
+.footer-section h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #4f46e5;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+}
+
+.footer-section p {
+  line-height: 1.6;
+  color: #4f46e5;
+}
+
+.footer-links {
+  flex: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.link-column {
+  flex: 1;
+  min-width: 150px;
+}
+
+.link-column h4 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #4f46e5;
+  border-bottom: 2px solid #818cf8;
+  padding-bottom: 0.5rem;
+}
+
+.link-column ul {
+  list-style: none;
+}
+
+.link-column li {
+  margin-bottom: 0.7rem;
+}
+
+.link-column a {
+  color: #4f46e5;
+  text-decoration: none;
+  transition: all 0.3s;
+  display: inline-block;
+}
+
+.link-column a:hover {
+  color: #4f46e5;
+  transform: translateX(5px);
+  text-shadow: 0 0 5px rgba(255,255,255,0.5);
+}
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 2rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 2px solid #818cf8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.social-icons {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-icons a {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  transition: transform 0.3s;
+}
+
+.social-icons a:hover {
+  transform: translateY(-3px);
+}
+
+/* Neue Regeln für die Farben */
+.footer-bottom p,
+.social-icons svg {
+  color: #4f46e5;
+  fill: #4f46e5;
+}
+
+/* Optional: Hover-Effekt verbessern */
+.social-icons a:hover svg {
+  fill: #3730a3;
+  transform: translateY(-3px);
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .footer-links {
+    width: 100%;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+}

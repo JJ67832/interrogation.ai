@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Optimierte Meta-Tags für SEO -->
+  <title>Coding Project Helper - Lösungen für technische Probleme | interrogation.ai</title>
+  <meta name="description" content="Kostenloser Coding Helper: Technische Probleme lösen, Lösungsfragen generieren, Code optimieren. Für React, Python, JavaScript und mehr.">
+  <meta name="keywords" content="coding hilfe, technische probleme lösen, react fehler, python debuggen, programmierhilfe">
+  
+  <!-- Open Graph Tags für Social Media -->
+  <meta property="og:title" content="Coding Project Helper - Technische Probleme lösen">
+  <meta property="og:description" content="Kostenloser Helfer für Entwickler: Behebe Code-Probleme, generiere Lösungsfragen und optimiere deine Projekte">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.interrogation.ai/code-helper.html">
+  <meta property="og:image" content="https://www.interrogation.ai/images/code-helper-og.png">
+  <meta property="og:locale" content="de_DE">
+  
+  <!-- Canonical URL für SEO -->
+  <link rel="canonical" href="https://www.interrogation.ai/code-helper.html">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/header-style.css" />
+  <link rel="stylesheet" href="../css/footer-style.css" />
+  <link rel="stylesheet" href="../css/cookies-style.css" />
+  <link rel="stylesheet" href="../css/bewertungen-style.css" />
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" href="/images/favicon.png" sizes="any" />
+  <link rel="icon" type="image/png" href="/images/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+  <link rel="shortcut icon" href="/images/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+  <link rel="manifest" href="/images/site.webmanifest" />
+
+  <!-- Structured Data mit echten Bewertungen -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Coding Project Helper",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": 4.4,
+      "reviewCount": 12,
+      "bestRating": 5
+    },
+    "review": [
+      {
+        "@type": "Review",
+        "author": "Lena",
+        "datePublished": "2025-06-15",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": 5
+        },
+        "reviewBody": "Die KI-Tools von interrogation.ai haben mir in verschiedenen Lebensbereichen geholfen. Besonders der Habit Helper und Situational Decider sind meine Favoriten!"
+      },
+      {
+        "@type": "Review",
+        "author": "Sophie",
+        "datePublished": "2025-06-20",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": 4
+        },
+        "reviewBody": "Die Kombination aus technischen und persönlichen Tools macht interrogation.ai einzigartig. Mein Favorit ist der Situational Decider!"
+      },
+      {
+        "@type": "Review",
+        "author": "Rainer Winkler",
+        "datePublished": "2025-07-03",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": 5
+        },
+        "reviewBody": "Interrogation AI ist unglaublich vielseitig und hat mir schon oft geholfen"
+      }
+    ]
+  }
+  </script>
+
+</head>
+<body>
+
+  <header class="main-header">
+    <div class="header-left">
+      <a href="../index.html" class="logo-link" aria-label="Zur Startseite">
+        <span class="logo">interrogation.ai</span>
+      </a>
+    </div>
+    
+    <div class="header-right">
+      <div class="search-container">
+        <form class="header-search-form">
+          <input type="text" placeholder="Suchen..." class="search-input">
+        </form>
+      </div>
+      <button class="menu-toggle" aria-label="Menü öffnen">
+        <span class="hamburger"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Suchergebnis-Overlay -->
+  <div class="results-backdrop" id="resultsBackdrop"></div>
+  
+  <div class="search-results-container" id="searchResults">
+    <div class="search-results-header">
+      <h3 id="resultsTitle">Suchergebnisse</h3>
+      <button class="close-results" id="closeResults">&times;</button>
+    </div>
+    <div id="resultsList"></div>
+  </div>
+
+  <nav class="main-nav">
+    <button class="close-nav" aria-label="Menü schließen">&times;</button>
+    <div class="mobile-search-container">
+      <form class="mobile-search-form">
+        <input type="text" placeholder="Suchen..." class="search-input">
+        <button type="submit" aria-label="Suchen">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+    <ul class="nav-list">
+      <li><a href="../index.html">Startseite</a></li>
+      <li class="has-submenu">
+        <a href="#" class="submenu-toggle">Top Tools: <span class="arrow">▼</span></a>
+        <ul class="submenu">
+          <li><a href="code-helper.html">Coding Project Helper</a></li>
+          <li><a href="habit-helper.html">Habit Helper</a></li>
+          <li><a href="situational-decider.html">Situational Decider</a></li>
+          <li><a href="glücksrad.html">Random Decider</a></li>
+        </ul>
+      </li>
+      <li><a href="tools-uebersicht.html">Alle Tools</a></li>
+      <li><a href="alle-bewertungen.html">Bewertungen</a></li>
+      <li><a href="ko">Kontakt</a></li>
+      <li><a href="ueber-uns.html">Über Uns</a></li>
+      <li id="account-nav-item"></li>
+    </ul>
+  </nav>
+
+  <div class="background-container"></div>
+  
+  <div class="content-container">
+    <div class="container">
+      <a class="exit-btn" href="../index.html">[Exit]</a>
+
+      <h1>Coding Project Helper</h1>
+
+      <p>Beantworte bitte kurz die folgenden technischen Fragen:</p>
+   
+      <form id="project-form">
+        <label>1. Um welches Coding-Projekt handelt es sich?
+          <input type="text" id="projekt" name="projekt" placeholder="z.B. React-App, Python-Skript, API-Integration" required />
+        </label>
+
+        <label>2. Was ist dein konkretes technisches Problem?
+          <textarea id="problem" name="problem" rows="2" placeholder="Fehlermeldung, unerwartetes Verhalten, Performance-Issue..." required></textarea>
+        </label>
+
+        <label>3. Was soll die Lösung technisch erreichen?
+          <textarea id="erwartung" name="erwartung" rows="2" placeholder="Gewünschte Funktionalität, erwartetes Verhalten..." required></textarea>
+        </label>
+
+        <label>4. Welche Lösungsansätze hast du bereits versucht?
+          <textarea id="bisheriges" name="bisheriges" rows="2" placeholder="Code-Änderungen, Bibliotheken, Debugging-Methoden..." required></textarea>
+        </label>
+
+        <p class="unlimited-notice">⭐ Angemeldete Benutzer genießen unbegrenzte Nutzung!</p>
+        <div class="request-counter">
+          <span id="remaining-requests">5</span>/5 Anfragen verbraucht
+        </div>
+
+        <div class="form-buttons">
+          <button type="submit" id="submit-btn">Technische Fragen generieren</button>
+          <button type="button" id="reset-btn">Eingabe löschen</button>
+        </div>
+      </form>
+
+      <div class="tips-container">
+        <div class="tips-header">
+          <h2>So verbesserst du deinen Prompt</h2>
+          <div class="highlight-bar"></div>
+        </div>
+        <div class="tips-content">
+          <ul>
+            <li><strong>Sei spezifisch:</strong> Nenne konkrete Technologien (z.B. "React 18", "Python 3.11")</li>
+            <li><strong>Fehlermeldungen einbeziehen:</strong> Kopiere exakte Fehlermeldungen und Stack-Traces</li>
+            <li><strong>Code-Ausschnitte:</strong> Füge relevante Code-Teile hinzu (wenn möglich)</li>
+            <li><strong>Schritte reproduzieren:</strong> Beschreibe genau, wie das Problem auftritt</li>
+            <li><strong>Umgebungsdetails:</strong> Nenne OS, Browser, Node-Version etc.</li>
+          </ul>
+          <p>Beispiel: Statt "Mein Code funktioniert nicht"<br>
+          Besser: "Meine React-Komponente (v18.2) rendert nicht, Fehler: 'Uncaught TypeError: map is undefined'"
+          </p>
+        </div>
+      </div>
+
+      <div id="loading" class="hidden">
+        <div class="spinner"></div>
+        <p>Lädt… bitte einen Moment.</p>
+      </div>
+
+      <div id="response-container" class="hidden">
+        <div class="response-header">
+          <h2>Deine Reflexionsfragen</h2>
+          <div class="highlight-bar"></div>
+        </div>
+        <div class="questions-output"></div>
+        <div class="action-buttons">
+          <button id="copy-btn">Fragen kopieren</button>
+          <button id="regen-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+              <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+            </svg>
+          </button>
+          <button id="new-btn">Neue Fragen</button>
+        </div>
+      </div>
+
+      <div id="history-section" class="hidden">
+        <div class="response-header">
+          <h2>Verlauf</h2>
+          <div class="highlight-bar"></div>
+        </div>
+        <div class="history-actions">
+          <button id="clear-history">Verlauf löschen</button>
+        </div>
+        <div id="history-container">
+          <p class="empty-history">Keine vorherigen Ergebnisse</p>
+        </div>
+      </div>
+
+      <div class="rating-display">
+        <div class="rating-header">
+          <h2>Nutzerbewertungen</h2>
+          <div class="highlight-bar"></div>
+        </div>
+        <div class="aggregate-rating" id="aggregate-rating">★ 4.4 · 12 Bewertungen</div>
+        <div class="reviews-container" id="reviews-list">
+          <!-- Bewertungen werden dynamisch eingefügt -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Limit-Popup -->
+  <div id="limit-popup" class="popup hidden">
+    <div class="popup-content">
+      <h2>Anfragelimit erreicht</h2>
+      <p>Sie haben Ihr Limit von 5 kostenlosen Anfragen erreicht.</p>
+      <p>Registrieren Sie sich für einen kostenlosen Account, um unbegrenzt Anfragen stellen zu können.</p>
+      <div class="countdown">
+        Nächste Anfrage möglich in: <span id="countdown">05:00:00</span>
+      </div>
+      <div class="popup-buttons">
+        <button id="register-btn">Jetzt anmelden</button>
+        <button id="close-popup">Schließen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cookie Consent Popup -->
+  <div id="cookie-consent" class="cookie-popup">
+    <div class="cookie-popup-content">
+      <h3>🍪 Cookie-Einstellungen</h3>
+      <p>Wir verwenden Cookies, um Ihnen die bestmögliche Erfahrung auf unserer Webseite zu bieten. Mit Klick auf "Akzeptieren" stimmen Sie der Verwendung aller Cookies zu.</p>
+      <div class="cookie-buttons">
+        <button id="cookie-decline" class="cookie-btn decline">Nicht akzeptieren</button>
+        <button id="cookie-accept" class="cookie-btn accept">Alle akzeptieren</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Privacy Policy Popup -->
+  <div id="privacy-popup" class="cookie-popup" style="display:none">
+    <div class="cookie-popup-content">
+      <h3>🔒 Datenschutzerklärung (Auszug)</h3>
+      <div class="privacy-content">
+        <p>Wir respektieren Ihre Privatsphäre. Hier eine Übersicht unserer Cookie-Nutzung:</p>
+        <ul>
+          <li><strong>Notwendige Cookies:</strong> Für grundlegende Funktionen der Website (immer aktiv)</li>
+          <li><strong>Funktionale Cookies:</strong> Zur Verbesserung der Benutzererfahrung</li>
+          <li><strong>Analytische Cookies:</strong> Zur Analyse des Nutzerverhaltens</li>
+        </ul>
+        <p>Ihre Daten werden gemäß unserer <a href="datenschutz.html">Datenschutzrichtlinie</a> verarbeitet.</p>
+      </div>
+      <div class="cookie-buttons">
+        <button id="privacy-accept-necessary" class="cookie-btn accept">Nur notwendige Cookies</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="main-footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>interrogation.ai</h3>
+        <p>Wir haben das Verhältnis zu künstliche Intelligenz umgedreht.</p>
+      </div>
+      
+      <div class="footer-links">
+        <div class="link-column">
+          <h4>Top Tools:</h4>
+          <ul>
+            <li><a href="code-helper.html">Coding Project Helper</a></li>
+            <li><a href="habit-helper.html">Habit Helper</a></li>
+            <li><a href="situational-decider.html">Situational Decider</a></li>
+          </ul>
+        </div>
+        
+        <div class="link-column">
+          <h4>Informationen</h4>
+          <ul>
+            <li><a href="ueber-uns.html">Über Uns</a></li>
+            <li><a href="kontakt.html">Kontakt</a></li>
+            <li><a href="tools-uebersicht.html">Alle Tools</a></li>
+            <li><a href="alle-bewertungen.html">Bewertungen</a></li>
+          </ul>
+        </div>
+        
+        <div class="link-column">
+          <h4>Rechtliches</h4>
+          <ul>
+            <li><a href="impressum.html">Impressum</a></li>
+            <li><a href="datenschutz.html">Datenschutz</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 interrogation.ai - Alle Rechte vorbehalten</p>
+      <div class="social-icons">
+        <a href="#" aria-label="YouTube">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+          </svg>
+        </a>
+        <a href="#" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/script.js"></script>
+  <script src="../js/header-script.js"></script>
+  <script src="../js/cookies-script.js"></script>
+  <script src="../js/bewertungen-loader.js"></script>
+  <script>
+    (function(){
+      function c(){
+        var b=a.contentDocument||a.contentWindow.document;
+        if(b){
+          var d=b.createElement('script');
+          d.innerHTML="window.__CF$cv$params={r:'94c1d36afd9df974',t:'MTc0OTMxNjg4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+          b.getElementsByTagName('head')[0].appendChild(d)
+        }
+      }
+      if(document.body){
+        var a=document.createElement('iframe');
+        a.height=1;
+        a.width=1;
+        a.style.position='absolute';
+        a.style.top=0;
+        a.style.left=0;
+        a.style.border='none';
+        a.style.visibility='hidden';
+        document.body.appendChild(a);
+        if('loading'!==document.readyState)c();
+        else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);
+        else{
+          var e=document.onreadystatechange||function(){};
+          document.onreadystatechange=function(b){
+            e(b);
+            'loading'!==document.readyState&&(document.onreadystatechange=e,c())
+          }
+        }
+      }
+    })();
+  </script>
+</body>
+</html>
