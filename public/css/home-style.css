@@ -1370,3 +1370,30 @@
     justify-content: center;
   }
 }
+
+/* Änderungen für Mobile-Ansicht der Beispielkarten */
+@media (max-width: 480px) {
+  .examples-grid {
+    grid-template-columns: minmax(0, 1fr); /* Wichtig: Breitenbegrenzung */
+  }
+  
+  .example-card {
+    padding: 0.8rem; /* Weniger Innenabstand */
+    max-width: 100%; /* Maximalbreite begrenzen */
+    overflow: hidden; /* Verhindert Überlauf */
+  }
+  
+  .example-card .problem,
+  .example-card .solution {
+    font-size: 0.85rem; /* Kleinere Schrift */
+    word-break: break-word; /* Automatischer Zeilenumbruch */
+  }
+}
+
+/* Zusätzliche Optimierung für sehr kleine Displays */
+@media (max-width: 380px) {
+  .example-card .problem,
+  .example-card .solution {
+    font-size: 0.8rem; /* Noch kleinere Schrift */
+  }
+}
