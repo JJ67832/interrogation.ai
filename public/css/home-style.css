@@ -1397,3 +1397,27 @@
     font-size: 0.8rem; /* Noch kleinere Schrift */
   }
 }
+
+/* Füge diesen Code am Ende der bestehenden @media-Regeln hinzu */
+@media (max-width: 480px) {
+  /* Bewertungsverteilung Überschrift optimieren */
+  .rating-distribution h3 {
+    font-size: 1.1rem; /* Kleinere Schriftgröße */
+    padding: 0 10px; /* Seitlicher Abstand */
+    margin-bottom: 1rem; /* Mehr Platz unter der Überschrift */
+    text-align: center; /* Zentrieren für bessere Lesbarkeit */
+    word-break: break-word; /* Zeilenumbruch bei langen Wörtern */
+  }
+  
+  /* Optional: Container-Abstand anpassen */
+  .rating-distribution {
+    padding: 1rem; /* Etwas weniger Innenabstand */
+  }
+}
+
+/* Für sehr kleine Displays zusätzliche Anpassungen */
+@media (max-width: 380px) {
+  .rating-distribution h3 {
+    font-size: 1rem; /* Noch kleinere Schrift */
+  }
+}
