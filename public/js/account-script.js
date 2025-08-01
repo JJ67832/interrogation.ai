@@ -172,19 +172,16 @@ document.addEventListener('DOMContentLoaded', () => {
       'width=600,height=600'
     );
     
-    // Listener für Nachricht vom Popup
     window.addEventListener('message', (event) => {
       if (event.data === 'google-auth-success') {
-        // Aktualisiere den Benutzerstatus im Hauptfenster
         checkAuthStatus();
       }
     });
     
-    // Fallback: Prüfe ob Fenster geschlossen wurde
     const checkWindowClosed = setInterval(() => {
       if (googleLoginWindow.closed) {
         clearInterval(checkWindowClosed);
-        checkAuthStatus();
+        setTimeout(checkAuthStatus, 500);
       }
     }, 500);
   }
