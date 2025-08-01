@@ -166,3 +166,18 @@
     padding: 1.5rem;
   }
 }
+
+/* Füge diese Regeln am Ende der Datei hinzu */
+@media (max-width: 480px) {
+  .contact-info p {
+    font-size: 0.95rem; /* Leicht verkleinerte Schriftgröße */
+    line-height: 1.5; /* Bessere Lesbarkeit */
+    word-break: break-all; /* Verhindert horizontales Scrolling */
+    padding: 0 10px; /* Atmungsraum auf kleinen Bildschirmen */
+  }
+  
+  .contact-info strong {
+    display: block; /* Label in eigene Zeile */
+    margin-bottom: 5px;
+  }
+}
