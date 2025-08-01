@@ -492,9 +492,8 @@
 }
 
 
-/* Neue Responsive-Regeln */
+/* Füge dies am Ende der CSS-Datei hinzu */
 @media (max-width: 768px) {
-  /* Anpassung Bewertungsüberschrift */
   .rating-header h2 {
     font-size: 1.6rem !important;
     padding: 0 15px;
@@ -506,26 +505,5 @@
   .highlight-bar {
     width: 80%;
     margin: 0.5rem auto;
-  }
-  
-  /* Abstand Exit-Button */
-  .exit-btn-account {
-    top: 2.5rem !important;
-    left: 1.5rem !important;
-    padding: 0.6rem 1.2rem !important;
-    font-size: 0.9rem !important;
-  }
-  
-  .wheel-section {
-    margin-top: 5rem !important;
-  }
-  
-  /* Zusätzliche Verbesserungen für Mobile */
-  .wheel-header h1 {
-    font-size: 1.8rem !important;
-  }
-  
-  .wheel-container {
-    gap: 1.5rem;
   }
 }
