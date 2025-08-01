@@ -537,7 +537,7 @@
   /* Bei sehr kleinen Displays Schrift leicht reduzieren */
   @media (max-width: 480px) {
     .rating-header h2 {
-      font-size: 1.6rem !important;
+      font-size: 1.2rem !important;
       padding: 0 15px;
     }
   }
