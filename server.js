@@ -12,8 +12,21 @@ const nodemailer = require('nodemailer');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Proxy-Support für Render aktivieren
+app.set('trust proxy', 1);
+
+// CORS-Einstellungen für Produktion
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'https://interrogation-ai-3.onrender.com'
+  ];
+  
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -24,14 +37,16 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 
+// Session-Konfiguration für Produktion
 app.use(session({
   secret: process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex'),
   resave: false,
   saveUninitialized: false,
+  proxy: true, // Wichtig für Reverse-Proxy
   cookie: { 
     secure: process.env.NODE_ENV === 'production',
     maxAge: 24 * 60 * 60 * 1000,
-    sameSite: 'lax',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     httpOnly: true,
     path: '/'
   }
@@ -40,10 +55,13 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Google Strategy mit dynamischer Callback-URL
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.GOOGLE_CALLBACK_URL,
+    callbackURL: process.env.NODE_ENV === 'production' 
+      ? 'https://interrogation-ai-3.onrender.com/auth/google/callback' 
+      : process.env.GOOGLE_CALLBACK_URL,
     scope: ['profile', 'email'],
     state: true
   },
@@ -588,7 +606,8 @@ app.get('/api/cookies/accept', (req, res) => {
   res.cookie('cookieConsent', 'accepted', { 
     maxAge: 365 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: 'lax'
+    sameSite: 'none',
+    secure: true
   });
   res.json({ status: 'success' });
 });
@@ -597,7 +616,8 @@ app.get('/api/cookies/decline', (req, res) => {
   res.cookie('cookieConsent', 'declined', { 
     maxAge: 365 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: 'lax'
+    sameSite: 'none',
+    secure: true
   });
   res.json({ status: 'success' });
 });
