@@ -496,19 +496,20 @@
 @media (max-width: 768px) {
   /* Anpassung der Bewertungsüberschrift */
   .rating-header h2 {
-    font-size: 1.6rem !important; /* Optimierte Schriftgröße */
+    font-size: 1.8rem !important;
     white-space: nowrap; /* Verhindert Zeilenumbruch */
-    overflow: visible; /* Stellt sicher, dass der Text vollständig sichtbar ist */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Fügt "..." hinzu wenn Text zu lang */
+    padding: 0 20px; /* Seitlicher Abstand */
     text-align: center;
-    padding: 0 10px; /* Seitlicher Abstand */
-    width: 100%;
+    max-width: 100%;
     box-sizing: border-box;
   }
   
   /* Container für die Überschrift anpassen */
   .rating-header {
-    overflow: visible; /* Stellt sicher, dass der Text nicht abgeschnitten wird */
-    padding: 0 5px;
+    overflow: hidden;
+    padding: 0 10px;
   }
   
   /* Abstand Exit-Button */
@@ -533,23 +534,11 @@
     gap: 1.5rem;
   }
   
-  /* Sicherstellen, dass der Container nicht zu schmal wird */
-  .content-container {
-    min-width: 320px; /* Mindestbreite für sehr kleine Geräte */
-    padding: 0 10px;
-  }
-  
   /* Bei sehr kleinen Displays Schrift leicht reduzieren */
   @media (max-width: 480px) {
     .rating-header h2 {
-      font-size: 1.5rem !important;
-    }
-    
-    /* Für extrem kleine Displays (z.B. iPhone 5) */
-    @media (max-width: 320px) {
-      .rating-header h2 {
-        font-size: 1.4rem !important;
-      }
+      font-size: 1.6rem !important;
+      padding: 0 15px;
     }
   }
 }
