@@ -12,21 +12,8 @@ const nodemailer = require('nodemailer');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Proxy-Support für Render aktivieren
-app.set('trust proxy', 1);
-
-// CORS-Einstellungen für Produktion
 app.use((req, res, next) => {
-  const allowedOrigins = [
-    'http://localhost:3000',
-    'https://interrogation-ai-3.onrender.com'
-  ];
-  
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -37,16 +24,14 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 
-// Session-Konfiguration für Produktion
 app.use(session({
   secret: process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex'),
   resave: false,
   saveUninitialized: false,
-  proxy: true, // Wichtig für Reverse-Proxy
   cookie: { 
     secure: process.env.NODE_ENV === 'production',
     maxAge: 24 * 60 * 60 * 1000,
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    sameSite: 'lax',
     httpOnly: true,
     path: '/'
   }
@@ -55,13 +40,10 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Google Strategy mit dynamischer Callback-URL
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.NODE_ENV === 'production' 
-      ? 'https://interrogation-ai-3.onrender.com/auth/google/callback' 
-      : process.env.GOOGLE_CALLBACK_URL,
+    callbackURL: process.env.GOOGLE_CALLBACK_URL,
     scope: ['profile', 'email'],
     state: true
   },
@@ -282,7 +264,7 @@ app.post('/search', (req, res) => {
         'wie entscheide ich', 'lösungsfindung', 'abwägen', 
         'prioritäten setzen', 'konsequenzen abschätzen', 'entscheidungsfindung',
         'dilemma lösen', 'problemlösung', 'alternativen bewerten',
-        'entscheidungshilfe', 'entscheidungsprozess', 'situation analysieren',
+        'entscheidungshilfe', 'entscheidungsprozest', 'situation analysieren',
         'wahl treffen', 'optionen vergleichen', 'entscheidungsmatrix'
       ] 
     },
@@ -610,8 +592,7 @@ app.get('/api/cookies/accept', (req, res) => {
   res.cookie('cookieConsent', 'accepted', { 
     maxAge: 365 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: 'none',
-    secure: true
+    sameSite: 'lax'
   });
   res.json({ status: 'success' });
 });
@@ -620,8 +601,7 @@ app.get('/api/cookies/decline', (req, res) => {
   res.cookie('cookieConsent', 'declined', { 
     maxAge: 365 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: 'none',
-    secure: true
+    sameSite: 'lax'
   });
   res.json({ status: 'success' });
 });
