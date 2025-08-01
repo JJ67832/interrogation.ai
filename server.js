@@ -107,25 +107,7 @@ app.get('/auth/google/callback',
     session: true 
   }),
   (req, res) => {
-    res.send(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Anmeldung erfolgreich</title>
-          <script>
-            window.onload = function() {
-              window.close();
-              if (window.opener) {
-                window.opener.postMessage('google-auth-success', '*');
-              }
-            };
-          </script>
-        </head>
-        <body>
-          <p>Anmeldung erfolgreich! Sie können dieses Fenster schließen.</p>
-        </body>
-      </html>
-    `);
+    res.redirect('/index.html'); // Geändert: Weiterleitung zur Startseite
   }
 );
 
