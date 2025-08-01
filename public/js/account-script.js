@@ -166,6 +166,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Google Login Funktion
   function handleGoogleLogin() {
+    // In der Produktion verwenden wir keine Popups, sondern direkte Navigation
+    if (window.location.hostname !== 'localhost') {
+      window.location.href = '/auth/google';
+      return;
+    }
+    
+    // Lokal: Popup
     const googleLoginWindow = window.open(
       '/auth/google',
       'GoogleLogin',
