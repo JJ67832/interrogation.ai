@@ -59,7 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (googleLoginBtnAccount) {
     googleLoginBtnAccount.addEventListener('click', (e) => {
       e.preventDefault();
-      handleGoogleLogin();
+      // Direkte Navigation zur Google-Authentifizierungsroute
+      window.location.href = '/auth/google';
     });
   }
 
@@ -96,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // NEU HINZUGEFÜGT: Schließen-Button für Erfolgs-Popup
+  // Schließen-Button für Erfolgs-Popup
   const closePopupBtn = document.getElementById('closePopupBtn');
   if (closePopupBtn) {
     closePopupBtn.addEventListener('click', () => {
@@ -105,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Eventuell fehlender Listener für Fehler-Popup (falls benötigt)
+  // Schließen-Button für Fehler-Popup
   const closeErrorBtn = document.getElementById('closeErrorBtn');
   if (closeErrorBtn) {
     closeErrorBtn.addEventListener('click', () => {
@@ -162,23 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
     form.querySelectorAll('input').forEach(input => {
       input.value = '';
     });
-  }
-
-  // Google Login Funktion
-  function handleGoogleLogin() {
-    const googleLoginWindow = window.open(
-      '/auth/google',
-      'GoogleLogin',
-      'width=600,height=600'
-    );
-    
-    const checkWindowClosed = setInterval(() => {
-      if (googleLoginWindow.closed) {
-        clearInterval(checkWindowClosed);
-        // Zur Startseite weiterleiten
-        window.location.href = '/index.html';
-      }
-    }, 500);
   }
 
   async function checkAuthStatus() {
@@ -323,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <a href="/html/account.html" class="account-link">
             <div class="nav-account">
               <div class="nav-profile-pic">
-                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='3.2' fill='%23757575'/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z" fill="%23757575"/></svg>" alt="Anmelden">
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='3.2' fill='%23757575'/><path d='M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z' fill='%23757575'/></svg>" alt="Anmelden">
               </div>
               <span>Anmelden</span>
             </div>
