@@ -89,37 +89,20 @@ app.get('/auth/google/callback',
     session: true 
   }),
   (req, res) => {
-    res.redirect('/index.html'); // Weiterleitung zur Startseite
+    // Erfolgreiche Authentifizierung, leite zur Hauptseite weiter
+    res.redirect('/index.html');
   }
 );
 
-// Ändere den Callback-Endpunkt
-app.get('/auth/google/callback',
-  passport.authenticate('google', { 
-    failureRedirect: '/html/account.html',
-    session: true 
-  }),
-  (req, res) => {
-    res.send(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Anmeldung erfolgreich</title>
-          <script>
-            // Fenster sofort schließen ohne Verzögerung
-            if (window.opener) {
-              window.opener.postMessage('google-auth-success', '*');
-            }
-            window.close();
-          </script>
-        </head>
-        <body>
-          <p>Anmeldung erfolgreich! Fenster wird geschlossen...</p>
-        </body>
-      </html>
-    `);
-  }
-);
+app.get('/auth/logout', (req, res) => {
+  req.logout(err => {
+    if (err) return res.status(500).json({ error: 'Abmeldung fehlgeschlagen' });
+    req.session.destroy(() => {
+      res.clearCookie('connect.sid');
+      res.redirect('/');
+    });
+  });
+});
 
 const USERS_FILE = path.join(__dirname, 'users.json');
 
