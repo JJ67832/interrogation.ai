@@ -12,6 +12,9 @@ const nodemailer = require('nodemailer');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// WICHTIG: Konsolenausgabe zur Überprüfung der Google Callback URL
+console.log('Google Callback URL:', process.env.GOOGLE_CALLBACK_URL);
+
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
   res.header('Access-Control-Allow-Credentials', 'true');
@@ -43,7 +46,7 @@ app.use(passport.session());
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.GOOGLE_CALLBACK_URL,
+    callbackURL: process.env.GOOGLE_CALLBACK_URL,  // Verwendet die Umgebungsvariable
     scope: ['profile', 'email'],
     state: true
   },
@@ -243,7 +246,7 @@ app.post('/search', (req, res) => {
         'wie entscheide ich', 'lösungsfindung', 'abwägen', 
         'prioritäten setzen', 'konsequenzen abschätzen', 'entscheidungsfindung',
         'dilemma lösen', 'problemlösung', 'alternativen bewerten',
-        'entscheidungshilfe', 'entscheidungsprozess', 'situation analysieren',
+        'entscheidungshilfe', 'entscheidungsprozest', 'situation analysieren',
         'wahl treffen', 'optionen vergleichen', 'entscheidungsmatrix'
       ] 
     },
