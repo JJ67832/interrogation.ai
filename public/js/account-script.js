@@ -59,8 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (googleLoginBtnAccount) {
     googleLoginBtnAccount.addEventListener('click', (e) => {
       e.preventDefault();
-      // Direkte Navigation zur Google-Authentifizierungsroute
-      window.location.href = '/auth/google';
+      handleGoogleLogin();
     });
   }
 
@@ -97,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Schließen-Button für Erfolgs-Popup
+  // NEU HINZUGEFÜGT: Schließen-Button für Erfolgs-Popup
   const closePopupBtn = document.getElementById('closePopupBtn');
   if (closePopupBtn) {
     closePopupBtn.addEventListener('click', () => {
@@ -106,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Schließen-Button für Fehler-Popup
+  // Eventuell fehlender Listener für Fehler-Popup (falls benötigt)
   const closeErrorBtn = document.getElementById('closeErrorBtn');
   if (closeErrorBtn) {
     closeErrorBtn.addEventListener('click', () => {
@@ -163,6 +162,35 @@ document.addEventListener('DOMContentLoaded', () => {
     form.querySelectorAll('input').forEach(input => {
       input.value = '';
     });
+  }
+
+  // Google Login Funktion
+  function handleGoogleLogin() {
+    // In der Produktion verwenden wir keine Popups, sondern direkte Navigation
+    if (window.location.hostname !== 'localhost') {
+      window.location.href = '/auth/google';
+      return;
+    }
+    
+    // Lokal: Popup
+    const googleLoginWindow = window.open(
+      '/auth/google',
+      'GoogleLogin',
+      'width=600,height=600'
+    );
+    
+    window.addEventListener('message', (event) => {
+      if (event.data === 'google-auth-success') {
+        checkAuthStatus();
+      }
+    });
+    
+    const checkWindowClosed = setInterval(() => {
+      if (googleLoginWindow.closed) {
+        clearInterval(checkWindowClosed);
+        setTimeout(checkAuthStatus, 500);
+      }
+    }, 500);
   }
 
   async function checkAuthStatus() {
