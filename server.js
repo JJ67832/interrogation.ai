@@ -12,11 +12,21 @@ const nodemailer = require('nodemailer');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// WICHTIG: Konsolenausgabe zur Überprüfung der Google Callback URL
-console.log('Google Callback URL:', process.env.GOOGLE_CALLBACK_URL);
+// Proxy-Support für Render aktivieren
+app.set('trust proxy', 1);
 
+// CORS-Einstellungen für Produktion
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'https://interrogation-ai-3.onrender.com'
+  ];
+  
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -27,14 +37,16 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 
+// Session-Konfiguration für Produktion
 app.use(session({
   secret: process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex'),
   resave: false,
   saveUninitialized: false,
+  proxy: true, // Wichtig für Reverse-Proxy
   cookie: { 
     secure: process.env.NODE_ENV === 'production',
     maxAge: 24 * 60 * 60 * 1000,
-    sameSite: 'lax',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     httpOnly: true,
     path: '/'
   }
@@ -43,10 +55,13 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Google Strategy mit dynamischer Callback-URL
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.GOOGLE_CALLBACK_URL,  // Verwendet die Umgebungsvariable
+    callbackURL: process.env.NODE_ENV === 'production' 
+      ? 'https://interrogation-ai-3.onrender.com/auth/google/callback' 
+      : process.env.GOOGLE_CALLBACK_URL,
     scope: ['profile', 'email'],
     state: true
   },
@@ -92,8 +107,25 @@ app.get('/auth/google/callback',
     session: true 
   }),
   (req, res) => {
-    // Erfolgreiche Authentifizierung, leite zur Hauptseite weiter
-    res.redirect('/index.html');
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Anmeldung erfolgreich</title>
+          <script>
+            window.onload = function() {
+              window.close();
+              if (window.opener) {
+                window.opener.postMessage('google-auth-success', '*');
+              }
+            };
+          </script>
+        </head>
+        <body>
+          <p>Anmeldung erfolgreich! Sie können dieses Fenster schließen.</p>
+        </body>
+      </html>
+    `);
   }
 );
 
@@ -246,7 +278,7 @@ app.post('/search', (req, res) => {
         'wie entscheide ich', 'lösungsfindung', 'abwägen', 
         'prioritäten setzen', 'konsequenzen abschätzen', 'entscheidungsfindung',
         'dilemma lösen', 'problemlösung', 'alternativen bewerten',
-        'entscheidungshilfe', 'entscheidungsprozest', 'situation analysieren',
+        'entscheidungshilfe', 'entscheidungsprozess', 'situation analysieren',
         'wahl treffen', 'optionen vergleichen', 'entscheidungsmatrix'
       ] 
     },
@@ -574,7 +606,8 @@ app.get('/api/cookies/accept', (req, res) => {
   res.cookie('cookieConsent', 'accepted', { 
     maxAge: 365 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: 'lax'
+    sameSite: 'none',
+    secure: true
   });
   res.json({ status: 'success' });
 });
@@ -583,7 +616,8 @@ app.get('/api/cookies/decline', (req, res) => {
   res.cookie('cookieConsent', 'declined', { 
     maxAge: 365 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: 'lax'
+    sameSite: 'none',
+    secure: true
   });
   res.json({ status: 'success' });
 });
