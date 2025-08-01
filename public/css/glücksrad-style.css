@@ -494,16 +494,51 @@
 
 /* Füge dies am Ende der CSS-Datei hinzu */
 @media (max-width: 768px) {
+  /* Anpassung der Bewertungsüberschrift */
   .rating-header h2 {
-    font-size: 1.6rem !important;
-    padding: 0 15px;
-    word-break: break-word;
-    line-height: 1.3;
-    margin-top: 0.5rem;
+    font-size: 1.8rem !important;
+    white-space: nowrap; /* Verhindert Zeilenumbruch */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Fügt "..." hinzu wenn Text zu lang */
+    padding: 0 20px; /* Seitlicher Abstand */
+    text-align: center;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   
-  .highlight-bar {
-    width: 80%;
-    margin: 0.5rem auto;
+  /* Container für die Überschrift anpassen */
+  .rating-header {
+    overflow: hidden;
+    padding: 0 10px;
+  }
+  
+  /* Abstand Exit-Button */
+  .exit-btn-account {
+    top: 1.5rem !important;
+    left: 1rem !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.9rem !important;
+  }
+  
+  /* Oberer Abstand für Hauptcontainer */
+  .wheel-section {
+    margin-top: 4rem !important;
+  }
+  
+  /* Zusätzliche Optimierungen für mobile Darstellung */
+  .wheel-header h1 {
+    font-size: 1.8rem !important;
+  }
+  
+  .wheel-container {
+    gap: 1.5rem;
+  }
+  
+  /* Bei sehr kleinen Displays Schrift leicht reduzieren */
+  @media (max-width: 480px) {
+    .rating-header h2 {
+      font-size: 1.6rem !important;
+      padding: 0 15px;
+    }
   }
 }
