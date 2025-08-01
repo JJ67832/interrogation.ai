@@ -96,19 +96,15 @@ app.get('/auth/google/callback',
           <title>Anmeldung erfolgreich</title>
           <script>
             window.onload = function() {
-              // Sende Erfolgsmeldung an Hauptfenster
+              window.close();
               if (window.opener) {
                 window.opener.postMessage('google-auth-success', '*');
               }
-              
-              // Schließe Popup nach kurzer Verzögerung
-              setTimeout(() => window.close(), 500);
             };
           </script>
         </head>
         <body>
-          <p>Anmeldung erfolgreich! Fenster schließt automatisch...</p>
-          <button onclick="window.close()">Falls nicht, hier klicken</button>
+          <p>Anmeldung erfolgreich! Sie können dieses Fenster schließen.</p>
         </body>
       </html>
     `);
@@ -264,7 +260,7 @@ app.post('/search', (req, res) => {
         'wie entscheide ich', 'lösungsfindung', 'abwägen', 
         'prioritäten setzen', 'konsequenzen abschätzen', 'entscheidungsfindung',
         'dilemma lösen', 'problemlösung', 'alternativen bewerten',
-        'entscheidungshilfe', 'entscheidungsprozest', 'situation analysieren',
+        'entscheidungshilfe', 'entscheidungsprozess', 'situation analysieren',
         'wahl treffen', 'optionen vergleichen', 'entscheidungsmatrix'
       ] 
     },
