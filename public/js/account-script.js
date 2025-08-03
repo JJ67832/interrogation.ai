@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const switchToRegister = document.getElementById('switch-to-register');
   const switchToLogin = document.getElementById('switch-to-login');
 
-  // Popup-Elemente
+  // Popup-Elemente (werden dynamisch gesucht)
   const popupBackdrop = document.getElementById('popupBackdrop');
   const successPopup = document.getElementById('successPopup');
   const errorPopup = document.getElementById('errorPopup');
@@ -79,19 +79,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Popup-Buttons
+  // Popup-Buttons (dynamisch binden)
   if (popupBackdrop) {
     popupBackdrop.addEventListener('click', () => {
-      successPopup.classList.remove('active');
-      errorPopup.classList.remove('active');
+      if (successPopup) successPopup.classList.remove('active');
+      if (errorPopup) errorPopup.classList.remove('active');
       popupBackdrop.style.display = 'none';
     });
   }
 
   if (goToAccountBtn) {
     goToAccountBtn.addEventListener('click', () => {
-      successPopup.classList.remove('active');
-      popupBackdrop.style.display = 'none';
+      if (successPopup) successPopup.classList.remove('active');
+      if (popupBackdrop) popupBackdrop.style.display = 'none';
       window.location.href = '/html/account-management.html';
     });
   }
@@ -100,8 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const closePopupBtn = document.getElementById('closePopupBtn');
   if (closePopupBtn) {
     closePopupBtn.addEventListener('click', () => {
-      successPopup.classList.remove('active');
-      popupBackdrop.style.display = 'none';
+      if (successPopup) successPopup.classList.remove('active');
+      if (popupBackdrop) popupBackdrop.style.display = 'none';
     });
   }
 
@@ -109,14 +109,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeErrorBtn = document.getElementById('closeErrorBtn');
   if (closeErrorBtn) {
     closeErrorBtn.addEventListener('click', () => {
-      errorPopup.classList.remove('active');
-      popupBackdrop.style.display = 'none';
+      if (errorPopup) errorPopup.classList.remove('active');
+      if (popupBackdrop) popupBackdrop.style.display = 'none';
     });
   }
 
   if (closeLogoutPopup) {
     closeLogoutPopup.addEventListener('click', () => {
-      logoutPopup.classList.remove('active');
+      if (logoutPopup) logoutPopup.classList.remove('active');
       window.location.href = '/html/account.html';
     });
   }
@@ -145,17 +145,35 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showSuccessPopup(title, message) {
-    popupTitle.textContent = title;
-    popupMessage.textContent = message;
-
-    popupBackdrop.style.display = 'block';
-    successPopup.classList.add('active');
+    const popupBackdrop = document.getElementById('popupBackdrop');
+    const successPopup = document.getElementById('successPopup');
+    const popupTitle = document.getElementById('popupTitle');
+    const popupMessage = document.getElementById('popupMessage');
+    
+    if (popupTitle && popupMessage) {
+      popupTitle.textContent = title;
+      popupMessage.textContent = message;
+    }
+    
+    if (popupBackdrop && successPopup) {
+      popupBackdrop.style.display = 'block';
+      successPopup.classList.add('active');
+    }
   }
 
   function showError(message) {
-    errorMessage.textContent = message;
-    popupBackdrop.style.display = 'block';
-    errorPopup.classList.add('active');
+    const popupBackdrop = document.getElementById('popupBackdrop');
+    const errorPopup = document.getElementById('errorPopup');
+    const errorMessage = document.getElementById('errorMessage');
+    
+    if (errorMessage) {
+      errorMessage.textContent = message;
+    }
+    
+    if (popupBackdrop && errorPopup) {
+      popupBackdrop.style.display = 'block';
+      errorPopup.classList.add('active');
+    }
   }
 
   function clearForm(form) {
@@ -201,27 +219,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (response.ok) {
         const user = await response.json();
-        showAccount(user);
+        
+        // Auf Account-Seite Account-Sektion anzeigen
+        if (document.getElementById('account-section')) {
+          showAccount(user);
+        }
+        
+        // Navigation auf allen Seiten aktualisieren
         updateNavigation(user);
 
-        // NEU: Willkommens-Popup für Google-Login anzeigen
-        if (user.showWelcomePopup) {
-          showSuccessPopup(
-            'Anmeldung erfolgreich', 
-            `Willkommen ${user.name ? user.name : user.email}!`
-          );
-        }
-
-        // Session-Status auch für die Startseite setzen
-        if (window.parent && window.parent.updateNavigation) {
-          window.parent.updateNavigation(user);
+        // Popup nur auf Startseite anzeigen
+        if (window.location.pathname.endsWith('/index.html') || window.location.pathname === '/') {
+          if (user.showWelcomePopup) {
+            showSuccessPopup(
+              'Anmeldung erfolgreich', 
+              `Willkommen ${user.name ? user.name : user.email}!`
+            );
+          }
         }
       } else {
-        showLogin();
+        if (document.getElementById('login-section')) {
+          showLogin();
+        }
       }
     } catch (error) {
       console.error('Fehler beim Überprüfen des Authentifizierungsstatus:', error);
-      showLogin();
+      if (document.getElementById('login-section')) {
+        showLogin();
+      }
     }
   }
 
@@ -243,9 +268,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (response.ok) {
         const user = await response.json();
-        showAccount(user);
+        
+        // Auf Account-Seite Account-Sektion anzeigen
+        if (document.getElementById('account-section')) {
+          showAccount(user);
+        }
+        
         updateNavigation(user);
-        showSuccessPopup('Anmeldung erfolgreich', `Willkommen zurück, ${user.email}!`);
+        
+        // Zur Startseite weiterleiten
+        window.location.href = '/index.html';
       } else {
         const errorData = await response.json();
         showError(`Anmeldung fehlgeschlagen: ${errorData.error}`);
@@ -282,9 +314,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (response.ok) {
         const user = await response.json();
-        showAccount(user);
+        
+        // Auf Account-Seite Account-Sektion anzeigen
+        if (document.getElementById('account-section')) {
+          showAccount(user);
+        }
+        
         updateNavigation(user);
-        showSuccessPopup('Registrierung erfolgreich', 'Dein Konto wurde erfolgreich erstellt!');
+        
+        // Zur Startseite weiterleiten
+        window.location.href = '/index.html';
       } else {
         const errorData = await response.json();
         showError(`Registrierung fehlgeschlagen: ${errorData.error}`);
@@ -305,12 +344,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (response.ok) {
-        logoutPopup.classList.add('active');
+        if (logoutPopup) logoutPopup.classList.add('active');
         updateNavigation(null);
 
         // Automatisch nach 3 Sekunden schließen
         setTimeout(() => {
-          logoutPopup.classList.remove('active');
+          if (logoutPopup) logoutPopup.classList.remove('active');
           window.location.href = '/html/account.html';
         }, 3000);
       } else {
