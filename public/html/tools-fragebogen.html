@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tool Fragebogen - interrogation.ai</title>
+  <link rel="stylesheet" href="../css/header-style.css" />
+  <link rel="stylesheet" href="../css/footer-style.css" />
+  <link rel="stylesheet" href="../css/fragebogen-style.css" />
+  <link rel="stylesheet" href="../css/cookies-style.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/home-style.css">
+
+  <link rel="icon" type="image/png" href="/images/favicon.png" sizes="any" />
+  <link rel="icon" type="image/png" href="/images/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+  <link rel="shortcut icon" href="/images/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+  <link rel="manifest" href="/images/site.webmanifest" />
+</head>
+<body>
+  <header class="main-header">
+    <div class="header-left">
+      <a href="../index.html" class="logo-link" aria-label="Zur Startseite">
+        <span class="logo">interrogation.ai</span>
+      </a>
+    </div>
+    
+    <div class="header-right">
+      <div class="search-container">
+        <form class="header-search-form">
+          <input type="text" placeholder="Suchen..." class="search-input">
+        </form>
+      </div>
+      <button class="menu-toggle" aria-label="Menü öffnen">
+        <span class="hamburger"></span>
+      </button>
+    </div>
+  </header>
+
+  <nav class="main-nav">
+    <button class="close-nav" aria-label="Menü schließen">&times;</button>
+    <div class="mobile-search-container">
+      <form class="mobile-search-form">
+        <input type="text" placeholder="Suchen..." class="search-input">
+        <button type="submit" aria-label="Suchen">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+    <ul class="nav-list">
+      <li><a href="../index.html">Startseite</a></li>
+      <li class="has-submenu">
+        <a href="#" class="submenu-toggle">Tools <span class="arrow">▼</span></a>
+        <ul class="submenu">
+          <li><a href="./code-helper.html">Coding Project Helper</a></li>
+          <li><a href="habit-helper.html">Habit Helper</a></li>
+          <li><a href="situational-decider.html">Situational Decider</a></li>
+          <li><a href="./glücksrad.html">Random Decider</a></li>
+        </ul>
+      </li>
+      <li><a href="./tools-uebersicht.html">Alle Tools</a></li>
+      <li><a href="./alle-bewertungen.html">Bewertungen</a></li>
+      <li><a href="./kontakt.html">Kontakt</a></li>
+      <li><a href="./ueber-uns.html">Über Uns</a></li>
+      <li id="account-nav-item"></li>
+    </ul>
+  </nav>
+  
+  <div class="content-container">
+    <div class="fragebogen-container">
+      <h1>Finde dein perfektes KI-Tool</h1>
+      <p>Beantworte 3 kurze Fragen für deine persönliche Tool-Empfehlung:</p>
+      
+      <form id="fragebogen-form">
+        <!-- Frage 1 -->
+        <div class="frage">
+          <h3>1. Was beschäftigt dich aktuell am meisten?</h3>
+          <label>
+            <input type="radio" name="q1" value="code" required>
+            Ein technisches Problem bei einem Programmierprojekt
+          </label>
+          <label>
+            <input type="radio" name="q1" value="gewohnheit">
+            Der Aufbau oder die Veränderung von Gewohnheiten
+          </label>
+          <label>
+            <input type="radio" name="q1" value="entscheidung">
+            Eine schwierige Entscheidung, die ich treffen muss
+          </label>
+          <label>
+            <input type="radio" name="q1" value="zufall">
+            Ich brauche einfach eine zufällige Auswahl oder Inspiration
+          </label>
+        </div>
+        
+        <!-- Frage 2 -->
+        <div class="frage">
+          <h3>2. Wie würdest du deine aktuelle Herausforderung beschreiben?</h3>
+          <label>
+            <input type="radio" name="q2" value="komplex" required>
+            Komplex und technisch
+          </label>
+          <label>
+            <input type="radio" name="q2" value="persönlich">
+            Persönlich und verhaltensbezogen
+          </label>
+          <label>
+            <input type="radio" name="q2" value="optionen">
+            Ich habe mehrere Optionen zur Auswahl
+          </label>
+          <label>
+            <input type="radio" name="q2" value="unentschlossen">
+            Ich bin unentschlossen und brauche einen Impuls
+          </label>
+        </div>
+        
+        <!-- Frage 3 -->
+        <div class="frage">
+          <h3>3. Was ist dein primäres Ziel?</h3>
+          <label>
+            <input type="radio" name="q3" value="lösung" required>
+            Eine funktionierende Lösung finden
+          </label>
+          <label>
+            <input type="radio" name="q3" value="routine">
+            Eine neue Routine etablieren
+          </label>
+          <label>
+            <input type="radio" name="q3" value="entscheidung-treffen">
+            Die beste Entscheidung treffen
+          </label>
+          <label>
+            <input type="radio" name="q3" value="inspiration">
+            Kreative Inspiration bekommen
+          </label>
+        </div>
+        
+        <button type="submit" class="tool-btn">Mein Tool finden</button>
+      </form>
+      
+      <div id="tool-ergebnis" style="display: none;">
+        <h2>Dein empfohlenes Tool:</h2>
+        <div class="tool-empfehlung">
+          <h3 id="tool-name"></h3>
+          <p id="tool-beschreibung"></p>
+          <a id="tool-link" href="#" class="tool-btn">Jetzt starten</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ <footer class="main-footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>interrogation.ai</h3>
+        <p>Wir haben das Verhältnis zu künstliche Intelligenz umgedreht.</p>
+      </div>
+      
+      <div class="footer-links">
+        <div class="link-column">
+          <h4>Top Tools:</h4>
+          <ul>
+            <li><a href="./code-helper.html">Coding Project Helper</a></li>
+            <li><a href="habit-helper.html">Habit Helper</a></li>
+            <li><a href="situational-decider.html">Situational Decider</a></li>
+          </ul>
+        </div>
+        
+        <div class="link-column">
+          <h4>Informationen</h4>
+          <ul>
+            <li><a href="./ueber-uns.html">Über Uns</a></li>
+            <li><a href="./kontakt.html">Kontakt</a></li>
+            <li><a href="./tools-uebersicht.html">Alle Tools</a></li>
+            <li><a href="alle-bewertungen.html">Bewertungen</a></li>
+          </ul>
+        </div>
+        
+        <div class="link-column">
+          <h4>Rechtliches</h4>
+          <ul>
+            <li><a href="./impressum.html">Impressum</a></li>
+            <li><a href="./datenschutz.html">Datenschutz</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 interrogation.ai - Alle Rechte vorbehalten</p>
+      <div class="social-icons">
+        <a href="#" aria-label="YouTube">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+          </svg>
+        </a>
+        <a href="#" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z" fill="#4285F4"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/fragebogen-script.js"></script>
+  <script src="../js/header-script.js"></script>
+  <script src="../js/cookies-script.js"></script>
+</body>
+</html>
