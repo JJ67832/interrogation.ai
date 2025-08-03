@@ -70,3 +70,29 @@
   color: #4b5563;
   margin-bottom: 1.5rem;
 }
+
+/* Füge diese neuen Regeln hinzu */
+#tool-ergebnis {
+  display: none;
+  margin-top: 3rem; /* Mehr Abstand nach oben */
+  padding-top: 2rem;
+  border-top: 2px dashed #c7d2fe;
+}
+
+#tool-ergebnis h2 {
+  color: #4f46e5; /* Blaue Farbe statt schwarz */
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem; /* Mehr Abstand nach unten */
+  text-shadow: 1px 1px rgba(0,0,0,0.1);
+}
+
+.tool-empfehlung {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  margin-top: 1rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  border: 2px solid #c7d2fe;
+}
