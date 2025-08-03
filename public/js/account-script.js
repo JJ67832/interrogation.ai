@@ -265,8 +265,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Navigation auf allen Seiten aktualisieren
         updateNavigation(user);
 
-        // Popup nur auf Startseite anzeigen
-        if (window.location.pathname.endsWith('/index.html') || window.location.pathname === '/') {
+        // Popup auf Tools-Übersicht anzeigen
+        if (window.location.pathname.includes('tools-uebersicht.html')) {
           if (user.showWelcomePopup) {
             showSuccessPopup(
               'Anmeldung erfolgreich', 
@@ -313,8 +313,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         updateNavigation(user);
         
-        // Zur Startseite weiterleiten
-        window.location.href = '/index.html';
+        // Weiterleitung zur Tools-Übersicht
+        window.location.href = '/html/tools-uebersicht.html';
       } else {
         const errorData = await response.json();
         showError(`Anmeldung fehlgeschlagen: ${errorData.error}`);
@@ -359,8 +359,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         updateNavigation(user);
         
-        // Zur Startseite weiterleiten
-        window.location.href = '/index.html';
+        // Weiterleitung zur Tools-Übersicht
+        window.location.href = '/html/tools-uebersicht.html';
       } else {
         const errorData = await response.json();
         showError(`Registrierung fehlgeschlagen: ${errorData.error}`);
