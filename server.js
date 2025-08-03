@@ -109,7 +109,7 @@ app.get('/auth/google/callback',
   (req, res) => {
     // Flag für Willkommens-Popup setzen
     req.session.showWelcomePopup = true;
-    res.redirect('/html/tolls-fragebogen.html'); // Weiterleitung zur Tools-Übersicht
+    res.redirect('/html/tools-fragebogen.html'); // Weiterleitung zur Tools-Übersicht
   }
 );
 
