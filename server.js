@@ -107,9 +107,9 @@ app.get('/auth/google/callback',
     session: true 
   }),
   (req, res) => {
+    // Flag für Willkommens-Popup setzen
     req.session.showWelcomePopup = true;
-    // Geändert von index.html zu tools-uebersicht.html
-    res.redirect('/html/tools-uebersicht.html');
+    res.redirect('/html/tools-uebersicht.html'); // Weiterleitung zur Tools-Übersicht
   }
 );
 
@@ -163,6 +163,8 @@ app.post('/api/auth/register', (req, res) => {
   saveUsers(users);
   
   req.session.user = { id: newUser.id, email: newUser.email };
+  // Flag für Willkommens-Popup setzen
+  req.session.showWelcomePopup = true;
   
   res.json({ 
     id: newUser.id,
@@ -179,6 +181,8 @@ app.post('/api/auth/login', (req, res) => {
   
   if (user) {
     req.session.user = { id: user.id, email: user.email };
+    // Flag für Willkommens-Popup setzen
+    req.session.showWelcomePopup = true;
     res.json({ 
       id: user.id,
       email: user.email,
