@@ -109,7 +109,7 @@ app.get('/auth/google/callback',
   (req, res) => {
     // Flag für Willkommens-Popup setzen
     req.session.showWelcomePopup = true;
-    res.redirect('/html/tools-fragebogen.html'); // Weiterleitung zur Tools-Übersicht
+    res.redirect('/html/tools-uebersicht.html'); // Weiterleitung zur Tools-Übersicht
   }
 );
 
@@ -166,11 +166,8 @@ app.post('/api/auth/register', (req, res) => {
   // Flag für Willkommens-Popup setzen
   req.session.showWelcomePopup = true;
   
-  res.json({ 
-    id: newUser.id,
-    email: newUser.email,
-    created: newUser.created
-  });
+  // Weiterleitung zur Tools-Übersicht
+  res.redirect('/html/tools-uebersicht.html');
 });
 
 app.post('/api/auth/login', (req, res) => {
@@ -183,11 +180,8 @@ app.post('/api/auth/login', (req, res) => {
     req.session.user = { id: user.id, email: user.email };
     // Flag für Willkommens-Popup setzen
     req.session.showWelcomePopup = true;
-    res.json({ 
-      id: user.id,
-      email: user.email,
-      created: user.created
-    });
+    // Weiterleitung zur Tools-Übersicht
+    res.redirect('/html/tools-uebersicht.html');
   } else {
     res.status(401).json({ error: 'Ungültige Anmeldedaten' });
   }
