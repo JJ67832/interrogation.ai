@@ -1,72 +1,59 @@
-.fragebogen-container {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background-color: #e0e7ff;
-  border: 4px solid #4f46e5;
-  box-shadow: 4px 4px 0px #818cf8;
-  border-radius: 8px;
-}
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('fragebogen-form');
+  const ergebnisDiv = document.getElementById('tool-ergebnis');
+  const toolName = document.getElementById('tool-name');
+  const toolBeschreibung = document.getElementById('tool-beschreibung');
+  const toolLink = document.getElementById('tool-link');
 
-.fragebogen-container h1 {
-  text-align: center;
-  color: #4f46e5;
-  margin-bottom: 1rem;
-}
-
-.fragebogen-container p {
-  text-align: center;
-  color: #4b5563;
-  margin-bottom: 2rem;
-}
-
-.frage {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-}
-
-.frage h3 {
-  color: #4f46e5;
-  margin-bottom: 1rem;
-}
-
-.frage label {
-  display: block;
-  padding: 0.8rem;
-  margin-bottom: 0.5rem;
-  border-radius: 4px;
-  background: #f9fafb;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.frage label:hover {
-  background: #e0e7ff;
-}
-
-.frage input[type="radio"] {
-  margin-right: 10px;
-}
-
-.tool-empfehlung {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  text-align: center;
-  margin-top: 2rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-}
-
-#tool-name {
-  color: #4f46e5;
-  font-size: 1.8rem;
-  margin-bottom: 0.5rem;
-}
-
-#tool-beschreibung {
-  color: #4b5563;
-  margin-bottom: 1.5rem;
-}
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    // Antworten sammeln
+    const antworten = {
+      q1: form.querySelector('input[name="q1"]:checked').value,
+      q2: form.querySelector('input[name="q2"]:checked').value,
+      q3: form.querySelector('input[name="q3"]:checked').value
+    };
+    
+    // Tool basierend auf Antworten zuweisen
+    let empfehlung;
+    
+    if (antworten.q1 === 'code' || antworten.q2 === 'komplex') {
+      empfehlung = {
+        name: 'Coding Project Helper',
+        beschreibung: 'Perfekt für technische Probleme und Programmierherausforderungen',
+        url: './code-helper.html'
+      };
+    } 
+    else if (antworten.q1 === 'gewohnheit' || antworten.q3 === 'routine') {
+      empfehlung = {
+        name: 'Habit Helper',
+        beschreibung: 'Ideal zum Aufbau neuer Routinen und Veränderung von Gewohnheiten',
+        url: './habit-helper.html'
+      };
+    } 
+    else if (antworten.q1 === 'entscheidung' || antworten.q3 === 'entscheidung-treffen') {
+      empfehlung = {
+        name: 'Situational Decider',
+        beschreibung: 'Optimal für strukturierte Entscheidungsfindung bei mehreren Optionen',
+        url: './situational-decider.html'
+      };
+    } 
+    else {
+      empfehlung = {
+        name: 'Random Decider',
+        beschreibung: 'Perfekt bei Entscheidungsblockaden oder für kreative Impulse',
+        url: './glücksrad.html'
+      };
+    }
+    
+    // Ergebnis anzeigen
+    toolName.textContent = empfehlung.name;
+    toolBeschreibung.textContent = empfehlung.beschreibung;
+    toolLink.href = empfehlung.url;
+    ergebnisDiv.style.display = 'block';
+    
+    // Nach unten scrollen, damit das Ergebnis sichtbar ist
+    ergebnisDiv.scrollIntoView({ behavior: 'smooth' });
+  });
+});
