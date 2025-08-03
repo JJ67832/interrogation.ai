@@ -96,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // NEU HINZUGEFÜGT: Schließen-Button für Erfolgs-Popup
   const closePopupBtn = document.getElementById('closePopupBtn');
   if (closePopupBtn) {
     closePopupBtn.addEventListener('click', () => {
@@ -104,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Eventuell fehlender Listener für Fehler-Popup (falls benötigt)
   const closeErrorBtn = document.getElementById('closeErrorBtn');
   if (closeErrorBtn) {
     closeErrorBtn.addEventListener('click', () => {
@@ -162,49 +164,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Verbesserte Google Login Funktion mit Vollbild-Popup
+  // Google Login Funktion
   function handleGoogleLogin() {
-    // Bildschirmgröße ermitteln
-    const width = window.screen.width;
-    const height = window.screen.height;
-    
     const googleLoginWindow = window.open(
       '/auth/google',
       'GoogleLogin',
-      `width=${width},height=${height},left=0,top=0,scrollbars=yes`
+      'width=600,height=600'
     );
     
-    // Zustand vor der Anmeldung speichern
-    const wasLoggedIn = !accountSection.classList.contains('hidden');
-
-    window.addEventListener('message', async (event) => {
+    window.addEventListener('message', (event) => {
       if (event.data === 'google-auth-success') {
-        try {
-          // Benutzerstatus direkt abfragen
-          const response = await fetch('/api/auth/status', {
-            method: 'GET',
-            credentials: 'include'
-          });
-          
-          if (response.ok) {
-            const user = await response.json();
-            showAccount(user);
-            updateNavigation(user);
-            
-            // Popup NUR anzeigen, wenn Benutzer vorher nicht angemeldet war
-            if (!wasLoggedIn) {
-              showSuccessPopup(
-                'Anmeldung erfolgreich', 
-                `Willkommen zurück, ${user.email}!`
-              );
-            }
-          }
-        } catch (error) {
-          console.error('Fehler nach Google-Anmeldung:', error);
-        }
+        checkAuthStatus();
       }
     });
-
+    
     const checkWindowClosed = setInterval(() => {
       if (googleLoginWindow.closed) {
         clearInterval(checkWindowClosed);
@@ -225,18 +198,16 @@ document.addEventListener('DOMContentLoaded', () => {
         showAccount(user);
         updateNavigation(user);
         
+        // Session-Status auch für die Startseite setzen
         if (window.parent && window.parent.updateNavigation) {
           window.parent.updateNavigation(user);
         }
-        return user;
       } else {
         showLogin();
-        return null;
       }
     } catch (error) {
       console.error('Fehler beim Überprüfen des Authentifizierungsstatus:', error);
       showLogin();
-      return null;
     }
   }
 
@@ -323,6 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutPopup.classList.add('active');
         updateNavigation(null);
         
+        // Automatisch nach 3 Sekunden schließen
         setTimeout(() => {
           logoutPopup.classList.remove('active');
           window.location.href = '/html/account.html';
