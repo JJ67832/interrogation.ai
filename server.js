@@ -107,7 +107,9 @@ app.get('/auth/google/callback',
     session: true 
   }),
   (req, res) => {
-    res.redirect('/index.html'); // Geändert: Weiterleitung zur Startseite
+    // Flag für Willkommens-Popup setzen
+    req.session.showWelcomePopup = true;
+    res.redirect('/html/account.html'); // Geändert: Weiterleitung zur Account-Seite
   }
 );
 
@@ -197,7 +199,8 @@ app.post('/api/auth/logout', (req, res) => {
 
 app.get('/api/auth/status', (req, res) => {
   const user = req.user || req.session.user;
-  
+  const showWelcomePopup = req.session.showWelcomePopup || false; // Neues Flag für Popup
+
   if (user) {
     const userData = {
       id: user.id,
@@ -205,8 +208,15 @@ app.get('/api/auth/status', (req, res) => {
       created: user.created || new Date().toISOString(),
       accountType: 'Kostenlos',
       googleId: user.googleId,
-      name: user.name || user.email.split('@')[0]
+      name: user.name || user.email.split('@')[0],
+      showWelcomePopup: showWelcomePopup // Flag an Frontend senden
     };
+    
+    // Flag zurücksetzen nach dem ersten Abruf
+    if (req.session.showWelcomePopup) {
+      delete req.session.showWelcomePopup;
+    }
+    
     res.json(userData);
   } else {
     res.status(401).json({ error: 'Nicht angemeldet' });
