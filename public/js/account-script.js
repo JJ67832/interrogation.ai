@@ -96,7 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // NEU HINZUGEFÜGT: Schließen-Button für Erfolgs-Popup
   const closePopupBtn = document.getElementById('closePopupBtn');
   if (closePopupBtn) {
     closePopupBtn.addEventListener('click', () => {
@@ -105,7 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Eventuell fehlender Listener für Fehler-Popup (falls benötigt)
   const closeErrorBtn = document.getElementById('closeErrorBtn');
   if (closeErrorBtn) {
     closeErrorBtn.addEventListener('click', () => {
@@ -164,27 +162,36 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Google Login Funktion
+  // Google Login Funktion - ERWEITERT FÜR POPUP
   function handleGoogleLogin() {
-    // In der Produktion verwenden wir keine Popups, sondern direkte Navigation
-    if (window.location.hostname !== 'localhost') {
-      window.location.href = '/auth/google';
-      return;
-    }
-    
-    // Lokal: Popup
     const googleLoginWindow = window.open(
       '/auth/google',
       'GoogleLogin',
       'width=600,height=600'
     );
     
-    window.addEventListener('message', (event) => {
+    // Zustand vor der Anmeldung prüfen
+    const userWasNotLoggedIn = accountSection.classList.contains('hidden');
+
+    window.addEventListener('message', async (event) => {
       if (event.data === 'google-auth-success') {
-        checkAuthStatus();
+        try {
+          // Benutzerstatus abrufen
+          const user = await checkAuthStatus();
+          
+          // Popup NUR anzeigen, wenn Benutzer vorher nicht angemeldet war
+          if (user && userWasNotLoggedIn) {
+            showSuccessPopup(
+              'Anmeldung erfolgreich', 
+              `Willkommen, ${user.email}!`
+            );
+          }
+        } catch (error) {
+          console.error('Fehler nach Google-Anmeldung:', error);
+        }
       }
     });
-    
+
     const checkWindowClosed = setInterval(() => {
       if (googleLoginWindow.closed) {
         clearInterval(checkWindowClosed);
@@ -193,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500);
   }
 
+  // Überarbeitete Funktion, die Benutzerobjekt zurückgibt
   async function checkAuthStatus() {
     try {
       const response = await fetch('/api/auth/status', {
@@ -205,16 +213,18 @@ document.addEventListener('DOMContentLoaded', () => {
         showAccount(user);
         updateNavigation(user);
         
-        // Session-Status auch für die Startseite setzen
         if (window.parent && window.parent.updateNavigation) {
           window.parent.updateNavigation(user);
         }
+        return user; // Benutzerobjekt zurückgeben
       } else {
         showLogin();
+        return null;
       }
     } catch (error) {
       console.error('Fehler beim Überprüfen des Authentifizierungsstatus:', error);
       showLogin();
+      return null;
     }
   }
 
@@ -301,7 +311,6 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutPopup.classList.add('active');
         updateNavigation(null);
         
-        // Automatisch nach 3 Sekunden schließen
         setTimeout(() => {
           logoutPopup.classList.remove('active');
           window.location.href = '/html/account.html';
