@@ -107,9 +107,9 @@ app.get('/auth/google/callback',
     session: true 
   }),
   (req, res) => {
-    // Flag für Willkommens-Popup setzen
     req.session.showWelcomePopup = true;
-    res.redirect('/index.html'); // Zur Startseite weiterleiten
+    // Geändert von index.html zu tools-uebersicht.html
+    res.redirect('/html/tools-uebersicht.html');
   }
 );
 
