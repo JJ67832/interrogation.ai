@@ -199,7 +199,8 @@ app.post('/api/auth/logout', (req, res) => {
 
 app.get('/api/auth/status', (req, res) => {
   const user = req.user || req.session.user;
-  const showWelcomePopup = req.session.showWelcomePopup || false; // Neues Flag für Popup
+  // Flag für Willkommens-Popup aus der Session lesen
+  const showWelcomePopup = req.session.showWelcomePopup || false;
 
   if (user) {
     const userData = {
@@ -212,7 +213,7 @@ app.get('/api/auth/status', (req, res) => {
       showWelcomePopup: showWelcomePopup // Flag an Frontend senden
     };
     
-    // Flag zurücksetzen nach dem ersten Abruf
+    // Flag SOFORT zurücksetzen nach dem Abruf
     if (req.session.showWelcomePopup) {
       delete req.session.showWelcomePopup;
     }
