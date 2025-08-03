@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Google Login Funktion - ERWEITERT FÜR POPUP
+  // Verbesserte Google Login Funktion mit Popup-Anzeige
   function handleGoogleLogin() {
     const googleLoginWindow = window.open(
       '/auth/google',
@@ -170,21 +170,30 @@ document.addEventListener('DOMContentLoaded', () => {
       'width=600,height=600'
     );
     
-    // Zustand vor der Anmeldung prüfen
-    const userWasNotLoggedIn = accountSection.classList.contains('hidden');
+    // Zustand vor der Anmeldung speichern
+    const wasLoggedIn = !accountSection.classList.contains('hidden');
 
     window.addEventListener('message', async (event) => {
       if (event.data === 'google-auth-success') {
         try {
-          // Benutzerstatus abrufen
-          const user = await checkAuthStatus();
+          // Benutzerstatus direkt abfragen
+          const response = await fetch('/api/auth/status', {
+            method: 'GET',
+            credentials: 'include'
+          });
           
-          // Popup NUR anzeigen, wenn Benutzer vorher nicht angemeldet war
-          if (user && userWasNotLoggedIn) {
-            showSuccessPopup(
-              'Anmeldung erfolgreich', 
-              `Willkommen, ${user.email}!`
-            );
+          if (response.ok) {
+            const user = await response.json();
+            showAccount(user);
+            updateNavigation(user);
+            
+            // Popup NUR anzeigen, wenn Benutzer vorher nicht angemeldet war
+            if (!wasLoggedIn) {
+              showSuccessPopup(
+                'Anmeldung erfolgreich', 
+                `Willkommen zurück, ${user.email}!`
+              );
+            }
           }
         } catch (error) {
           console.error('Fehler nach Google-Anmeldung:', error);
@@ -200,7 +209,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500);
   }
 
-  // Überarbeitete Funktion, die Benutzerobjekt zurückgibt
   async function checkAuthStatus() {
     try {
       const response = await fetch('/api/auth/status', {
@@ -216,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.parent && window.parent.updateNavigation) {
           window.parent.updateNavigation(user);
         }
-        return user; // Benutzerobjekt zurückgeben
+        return user;
       } else {
         showLogin();
         return null;
