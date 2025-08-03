@@ -162,12 +162,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Verbesserte Google Login Funktion mit Popup-Anzeige
+  // Verbesserte Google Login Funktion mit Vollbild-Popup
   function handleGoogleLogin() {
+    // Bildschirmgröße ermitteln
+    const width = window.screen.width;
+    const height = window.screen.height;
+    
     const googleLoginWindow = window.open(
       '/auth/google',
       'GoogleLogin',
-      'width=600,height=600'
+      `width=${width},height=${height},left=0,top=0,scrollbars=yes`
     );
     
     // Zustand vor der Anmeldung speichern
