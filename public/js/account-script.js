@@ -145,20 +145,57 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showSuccessPopup(title, message) {
-    const popupBackdrop = document.getElementById('popupBackdrop');
-    const successPopup = document.getElementById('successPopup');
-    const popupTitle = document.getElementById('popupTitle');
-    const popupMessage = document.getElementById('popupMessage');
+    // Popup-Elemente finden oder erstellen
+    let popupBackdrop = document.getElementById('popupBackdrop');
+    let successPopup = document.getElementById('successPopup');
     
-    if (popupTitle && popupMessage) {
-      popupTitle.textContent = title;
-      popupMessage.textContent = message;
+    // Wenn nicht existiert, erstellen wir das Popup dynamisch
+    if (!popupBackdrop) {
+      popupBackdrop = document.createElement('div');
+      popupBackdrop.id = 'popupBackdrop';
+      popupBackdrop.className = 'popup-backdrop';
+      document.body.appendChild(popupBackdrop);
     }
     
-    if (popupBackdrop && successPopup) {
-      popupBackdrop.style.display = 'block';
-      successPopup.classList.add('active');
+    if (!successPopup) {
+      successPopup = document.createElement('div');
+      successPopup.id = 'successPopup';
+      successPopup.className = 'popup';
+      successPopup.innerHTML = `
+        <div class="popup-content">
+          <div class="popup-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path fill="#4CAF50" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+          </div>
+          <h2 id="popupTitle" class="popup-title">${title}</h2>
+          <p id="popupMessage" class="popup-message">${message}</p>
+          <div class="popup-buttons">
+            <button id="goToAccountBtn" class="btn-primary">Account verwalten</button>
+            <button id="closePopupBtn" class="btn-secondary">Schließen</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(successPopup);
+      
+      // Event-Listener hinzufügen
+      document.getElementById('goToAccountBtn').addEventListener('click', () => {
+        window.location.href = '/html/account-management.html';
+      });
+      
+      document.getElementById('closePopupBtn').addEventListener('click', () => {
+        popupBackdrop.style.display = 'none';
+        successPopup.style.display = 'none';
+      });
     }
+    
+    // Texte setzen
+    document.getElementById('popupTitle').textContent = title;
+    document.getElementById('popupMessage').textContent = message;
+    
+    // Anzeigen
+    popupBackdrop.style.display = 'block';
+    successPopup.style.display = 'block';
   }
 
   function showError(message) {
@@ -233,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (user.showWelcomePopup) {
             showSuccessPopup(
               'Anmeldung erfolgreich', 
-              `Willkommen ${user.name ? user.name : user.email}!`
+              `Willkommen zurück, ${user.email}!`
             );
           }
         }
