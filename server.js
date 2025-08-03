@@ -109,7 +109,7 @@ app.get('/auth/google/callback',
   (req, res) => {
     // Flag für Willkommens-Popup setzen
     req.session.showWelcomePopup = true;
-    res.redirect('/html/account.html'); // Geändert: Weiterleitung zur Account-Seite
+    res.redirect('/index.html'); // Zur Startseite weiterleiten
   }
 );
 
@@ -270,7 +270,7 @@ app.post('/search', (req, res) => {
         'wie entscheide ich', 'lösungsfindung', 'abwägen', 
         'prioritäten setzen', 'konsequenzen abschätzen', 'entscheidungsfindung',
         'dilemma lösen', 'problemlösung', 'alternativen bewerten',
-        'entscheidungshilfe', 'entscheidungsprozess', 'situation analysieren',
+        'entscheidungshilfe', 'entscheidungsprozest', 'situation analysieren',
         'wahl treffen', 'optionen vergleichen', 'entscheidungsmatrix'
       ] 
     },
