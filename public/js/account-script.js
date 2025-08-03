@@ -59,8 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (googleLoginBtnAccount) {
     googleLoginBtnAccount.addEventListener('click', (e) => {
       e.preventDefault();
-      // Direkte Navigation zur Google-Authentifizierungsroute
-      window.location.href = '/auth/google';
       handleGoogleLogin();
     });
   }
@@ -99,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Schließen-Button für Erfolgs-Popup
-  // NEU HINZUGEFÜGT: Schließen-Button für Erfolgs-Popup
   const closePopupBtn = document.getElementById('closePopupBtn');
   if (closePopupBtn) {
     closePopupBtn.addEventListener('click', () => {
@@ -109,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Schließen-Button für Fehler-Popup
-  // Eventuell fehlender Listener für Fehler-Popup (falls benötigt)
   const closeErrorBtn = document.getElementById('closeErrorBtn');
   if (closeErrorBtn) {
     closeErrorBtn.addEventListener('click', () => {
@@ -170,31 +166,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Google Login Funktion
   function handleGoogleLogin() {
-    // In der Produktion verwenden wir keine Popups, sondern direkte Navigation
-    if (window.location.hostname !== 'localhost') {
-      window.location.href = '/auth/google';
-      return;
+    // Immer zur Account-Seite navigieren nach Login
+    window.location.href = '/auth/google';
+    
+    // Lokale Entwicklung mit Popup (optional)
+    if (window.location.hostname === 'localhost') {
+      const googleLoginWindow = window.open(
+        '/auth/google',
+        'GoogleLogin',
+        'width=600,height=600'
+      );
+      
+      window.addEventListener('message', (event) => {
+        if (event.data === 'google-auth-success') {
+          checkAuthStatus();
+        }
+      });
+      
+      const checkWindowClosed = setInterval(() => {
+        if (googleLoginWindow.closed) {
+          clearInterval(checkWindowClosed);
+          setTimeout(checkAuthStatus, 500);
+        }
+      }, 500);
     }
-    
-    // Lokal: Popup
-    const googleLoginWindow = window.open(
-      '/auth/google',
-      'GoogleLogin',
-      'width=600,height=600'
-    );
-    
-    window.addEventListener('message', (event) => {
-      if (event.data === 'google-auth-success') {
-        checkAuthStatus();
-      }
-    });
-    
-    const checkWindowClosed = setInterval(() => {
-      if (googleLoginWindow.closed) {
-        clearInterval(checkWindowClosed);
-        setTimeout(checkAuthStatus, 500);
-      }
-    }, 500);
   }
 
   async function checkAuthStatus() {
@@ -208,6 +203,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const user = await response.json();
         showAccount(user);
         updateNavigation(user);
+
+        // NEU: Willkommens-Popup für Google-Login anzeigen
+        if (user.showWelcomePopup) {
+          showSuccessPopup(
+            'Anmeldung erfolgreich', 
+            `Willkommen ${user.name ? user.name : user.email}!`
+          );
+        }
 
         // Session-Status auch für die Startseite setzen
         if (window.parent && window.parent.updateNavigation) {
