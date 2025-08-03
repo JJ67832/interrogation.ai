@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const logoutBtn = document.getElementById('logout-btn');
   const switchToRegister = document.getElementById('switch-to-register');
   const switchToLogin = document.getElementById('switch-to-login');
-  
+
   // Popup-Elemente
   const popupBackdrop = document.getElementById('popupBackdrop');
   const successPopup = document.getElementById('successPopup');
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const popupTitle = document.getElementById('popupTitle');
   const popupMessage = document.getElementById('popupMessage');
   const errorMessage = document.getElementById('errorMessage');
-  
+
   // Logout-Popup Elemente
   const logoutPopup = document.getElementById('logoutPopup');
   const closeLogoutPopup = document.getElementById('closeLogoutPopup');
@@ -59,6 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (googleLoginBtnAccount) {
     googleLoginBtnAccount.addEventListener('click', (e) => {
       e.preventDefault();
+      // Direkte Navigation zur Google-Authentifizierungsroute
+      window.location.href = '/auth/google';
       handleGoogleLogin();
     });
   }
@@ -68,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     button.addEventListener('click', function() {
       const input = this.parentElement.querySelector('input');
       const icon = this.querySelector('.eye-icon');
-      
+
       if (input.type === 'password') {
         input.type = 'text';
         icon.innerHTML = '<path d="M12 6.5c2.76 0 5 2.24 5 5 0 .51-.1 1-.24 1.46l3.06 3.06c1.39-1.23 2.49-2.77 3.18-4.53C21.27 7.11 17 4 12 4c-1.27 0-2.49.2-3.64.57l2.17 2.17c.47-.14.96-.24 1.47-.24zM2.71 3.16c-.39.39-.39 1.02 0 1.41l1.97 1.97C3.06 7.83 1.77 9.53 1 11.5 2.73 15.89 7 19 12 19c1.52 0 2.97-.3 4.31-.82l2.72 2.72c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L4.13 3.16c-.39-.39-1.03-.39-1.42 0zM12 16.5c-2.76 0-5-2.24-5-5 0-.77.18-1.5.5-2.14l1.57 1.57c-.03.18-.06.37-.06.57 0 1.66 1.34 3 3 3 .2 0 .38-.03.57-.07L13.14 14c-.64.32-1.37.5-2.14.5zm2.97-5.33c-.15-1.4-1.25-2.49-2.64-2.64l2.64 2.64z"/>';
@@ -96,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Schließen-Button für Erfolgs-Popup
   // NEU HINZUGEFÜGT: Schließen-Button für Erfolgs-Popup
   const closePopupBtn = document.getElementById('closePopupBtn');
   if (closePopupBtn) {
@@ -105,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Schließen-Button für Fehler-Popup
   // Eventuell fehlender Listener für Fehler-Popup (falls benötigt)
   const closeErrorBtn = document.getElementById('closeErrorBtn');
   if (closeErrorBtn) {
@@ -138,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginSection) loginSection.classList.add('hidden');
     if (registerSection) registerSection.classList.add('hidden');
     if (accountSection) accountSection.classList.remove('hidden');
-    
+
     document.getElementById('account-email').textContent = user.email;
     document.getElementById('join-date').textContent = new Date(user.created).toLocaleDateString('de-DE');
     document.getElementById('last-login').textContent = new Date().toLocaleDateString('de-DE');
@@ -147,17 +151,17 @@ document.addEventListener('DOMContentLoaded', () => {
   function showSuccessPopup(title, message) {
     popupTitle.textContent = title;
     popupMessage.textContent = message;
-    
+
     popupBackdrop.style.display = 'block';
     successPopup.classList.add('active');
   }
-  
+
   function showError(message) {
     errorMessage.textContent = message;
     popupBackdrop.style.display = 'block';
     errorPopup.classList.add('active');
   }
-  
+
   function clearForm(form) {
     form.querySelectorAll('input').forEach(input => {
       input.value = '';
@@ -166,6 +170,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Google Login Funktion
   function handleGoogleLogin() {
+    // In der Produktion verwenden wir keine Popups, sondern direkte Navigation
+    if (window.location.hostname !== 'localhost') {
+      window.location.href = '/auth/google';
+      return;
+    }
+    
+    // Lokal: Popup
     const googleLoginWindow = window.open(
       '/auth/google',
       'GoogleLogin',
@@ -192,12 +203,12 @@ document.addEventListener('DOMContentLoaded', () => {
         method: 'GET',
         credentials: 'include'
       });
-      
+
       if (response.ok) {
         const user = await response.json();
         showAccount(user);
         updateNavigation(user);
-        
+
         // Session-Status auch für die Startseite setzen
         if (window.parent && window.parent.updateNavigation) {
           window.parent.updateNavigation(user);
@@ -213,10 +224,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function handleLogin(e) {
     e.preventDefault();
-    
+
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
-    
+
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
@@ -226,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ email, password }),
         credentials: 'include'
       });
-      
+
       if (response.ok) {
         const user = await response.json();
         showAccount(user);
@@ -246,16 +257,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function handleRegister(e) {
     e.preventDefault();
-    
+
     const email = document.getElementById('register-email').value;
     const password = document.getElementById('register-password').value;
     const confirmPassword = document.getElementById('register-confirm').value;
-    
+
     if (password !== confirmPassword) {
       showError('Passwörter stimmen nicht überein!');
       return;
     }
-    
+
     try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
@@ -265,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ email, password }),
         credentials: 'include'
       });
-      
+
       if (response.ok) {
         const user = await response.json();
         showAccount(user);
@@ -289,11 +300,11 @@ document.addEventListener('DOMContentLoaded', () => {
         method: 'POST',
         credentials: 'include'
       });
-      
+
       if (response.ok) {
         logoutPopup.classList.add('active');
         updateNavigation(null);
-        
+
         // Automatisch nach 3 Sekunden schließen
         setTimeout(() => {
           logoutPopup.classList.remove('active');
@@ -310,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateNavigation(user) {
     const accountNavItem = document.getElementById('account-nav-item');
-    
+
     if (accountNavItem) {
       if (user) {
         accountNavItem.innerHTML = `
