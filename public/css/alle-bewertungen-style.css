@@ -50,6 +50,38 @@
   text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
+/* Sterneingabe-Styling */
+.stars-input {
+  display: flex;
+  flex-direction: row; /* KORRIGIERT: row statt row-reverse */
+  justify-content: flex-start; /* KORRIGIERT: flex-start statt flex-end */
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.star-input {
+  display: none;
+}
+
+.star-label {
+  cursor: pointer;
+  font-size: 2.2rem;
+  color: #e5e7eb;
+  transition: color 0.2s;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Hover-Effekte */
+.star-input:checked ~ .star-label,
+.star-label:hover,
+.star-label:hover ~ .star-label {
+  color: #ffc107;
+}
+
+/* Ausgewählte Sterne */
+.star-input:checked + .star-label {
+  transform: scale(1.1);
+}
 
 .highlight-bar {
   height: 6px;
@@ -257,39 +289,6 @@
   outline: none;
   border-color: #818cf8;
   box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
-}
-
-/* Verbesserte Sternbewertung */
-.stars-input {
-  display: flex;
-  flex-direction: row-reverse; /* Umgekehrte Reihenfolge für korrekte CSS-Selektion */
-  justify-content: flex-end; /* Sterne links ausrichten */
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.star-input {
-  display: none;
-}
-
-.star-label {
-  cursor: pointer;
-  font-size: 2.2rem;
-  color: #e5e7eb;
-  transition: all 0.2s;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-
-/* Alle Sterne rechts vom ausgewählten Stern färben */
-.star-input:checked ~ .star-label,
-.star-label:hover,
-.star-label:hover ~ .star-label {
-  color: #ffc107;
-}
-
-/* Ausgewählten Stern hervorheben */
-.star-input:checked + .star-label {
-  transform: scale(1.1);
 }
 
 .submit-btn {
