@@ -1,4 +1,4 @@
-// public/js/bewertungen-script.js
+// public/js/alle-bewertungen-script.js
 document.addEventListener('DOMContentLoaded', () => {
   // Konfiguration
   const reviewsPerPage = 15;
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     currentPage = 1;
   }
   
-  // Bewertungen anzeigen
+  // Bewertungen anzeigen (KORRIGIERTE STERNE-DARSTELLUNG)
   function displayReviews() {
     const startIndex = 0;
     const endIndex = currentPage * reviewsPerPage;
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const reviewCard = document.createElement('div');
       reviewCard.className = 'review-card';
       
- 
+      // KORRIGIERT: Sterne generierung mit ★ und ☆
       let starsHtml = '';
       for (let i = 0; i < 5; i++) {
         starsHtml += `<span class="star">${i < review.rating ? '★' : '☆'}</span>`;
