@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const reviewCard = document.createElement('div');
       reviewCard.className = 'review-card';
       
-      // Sterne generieren
+ 
       let starsHtml = '';
       for (let i = 0; i < 5; i++) {
         starsHtml += `<span class="star">${i < review.rating ? '★' : '☆'}</span>`;
