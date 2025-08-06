@@ -53,8 +53,8 @@
 /* Sterneingabe-Styling */
 .stars-input {
   display: flex;
-  flex-direction: row; /* Korrekte Richtung */
-  justify-content: flex-start; /* Sterne jetzt von links beginnend */
+  flex-direction: row; /* KORRIGIERT: row statt row-reverse */
+  justify-content: flex-start; /* KORRIGIERT: flex-start statt flex-end */
   gap: 0.5rem;
   margin-bottom: 1rem;
 }
@@ -71,20 +71,16 @@
   text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-/* Hover-Effekte - JETZT KORREKT VON LINKS NACH RECHTS */
+/* Hover-Effekte */
+.star-input:checked ~ .star-label,
 .star-label:hover,
 .star-label:hover ~ .star-label {
   color: #ffc107;
 }
 
-/* Ausgewählte Sterne - JETZT KORREKT VON LINKS NACH RECHTS */
-.star-input:checked ~ .star-label {
-  color: #ffc107;
-}
-
-/* Nachfolgende Sterne dunkler */
-.star-input:checked + .star-label ~ .star-label {
-  color: #e5e7eb;
+/* Ausgewählte Sterne */
+.star-input:checked + .star-label {
+  transform: scale(1.1);
 }
 
 .highlight-bar {
