@@ -8,40 +8,9 @@ const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const nodemailer = require('nodemailer');
-const Database = require('better-sqlite3'); // Hinzugefügt
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// Datenbank initialisieren
-const db = new Database('bewertungen.db');
-
-// Tabelle für Bewertungen erstellen (falls nicht vorhanden)
-db.prepare(`
-  CREATE TABLE IF NOT EXISTS bewertungen (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    author TEXT NOT NULL,
-    date TEXT NOT NULL,
-    rating INTEGER NOT NULL,
-    comment TEXT NOT NULL
-  )
-`).run();
-
-// Funktion zum Lesen der Bewertungen (jetzt aus der Datenbank)
-function getAggregatedReviews() {
-  const reviews = db.prepare('SELECT * FROM bewertungen').all();
-  const reviewCount = reviews.length;
-  const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-  const ratingValue = reviewCount > 0 
-    ? Math.round((totalRating / reviewCount) * 10) / 10 
-    : 0;
-    
-  return {
-    ratingValue,
-    reviewCount,
-    reviews
-  };
-}
 
 // Proxy-Support für Render aktivieren
 app.set('trust proxy', 1);
@@ -692,13 +661,35 @@ app.post('/api/check-spin-limit', (req, res) => {
   res.json({ remaining: 5 - req.session.spinCount });
 });
 
-// Bewertungs-Endpunkte mit Datenbank
+const BEWERTUNGEN_FILE = path.join(__dirname, 'bewertungen.json');
+
+function getAggregatedReviews() {
+  try {
+    const data = fs.readFileSync(BEWERTUNGEN_FILE, 'utf8');
+    const bewertungen = JSON.parse(data);
+    
+    bewertungen.reviewCount = bewertungen.reviews.length;
+    
+    const totalRating = bewertungen.reviews.reduce((sum, review) => sum + review.rating, 0);
+    bewertungen.ratingValue = Math.round((totalRating / bewertungen.reviewCount) * 10) / 10;
+    
+    return bewertungen;
+  } catch (error) {
+    console.error('Fehler beim Lesen der Bewertungen:', error);
+    return {
+      ratingValue: 0,
+      reviewCount: 0,
+      reviews: []
+    };
+  }
+}
+
 app.get('/api/bewertungen', (req, res) => {
   try {
     const bewertungen = getAggregatedReviews();
     res.json(bewertungen);
   } catch (error) {
-    console.error('Fehler beim Laden der Bewertungen:', error);
+    console.error('Fehler beim Lesen der Bewertungen:', error);
     res.status(500).json({ error: 'Bewertungen konnten nicht geladen werden' });
   }
 });
@@ -713,20 +704,11 @@ app.post('/api/bewertungen', (req, res) => {
     
     newReview.date = newReview.date || new Date().toISOString().split('T')[0];
     
-    // In die Datenbank einfügen
-    const stmt = db.prepare(`
-      INSERT INTO bewertungen (author, date, rating, comment)
-      VALUES (?, ?, ?, ?)
-    `);
-    
-    const result = stmt.run(
-      newReview.author,
-      newReview.date,
-      newReview.rating,
-      newReview.comment
-    );
-    
     const bewertungen = getAggregatedReviews();
+    
+    bewertungen.reviews.push(newReview);
+    
+    fs.writeFileSync(BEWERTUNGEN_FILE, JSON.stringify(bewertungen, null, 2), 'utf8');
     
     res.json({ 
       success: true, 
@@ -778,33 +760,6 @@ app.get('/api/structured-data', (req, res) => {
     res.status(500).json({ error: 'Strukturierte Daten konnten nicht generiert werden' });
   }
 });
-
-// Migration der bestehenden Bewertungen
-const rowCount = db.prepare('SELECT COUNT(*) as count FROM bewertungen').get().count;
-if (rowCount === 0) {
-  try {
-    const data = fs.readFileSync(path.join(__dirname, 'bewertungen.json'), 'utf8');
-    const bewertungen = JSON.parse(data);
-    
-    const insertStmt = db.prepare(`
-      INSERT INTO bewertungen (author, date, rating, comment)
-      VALUES (?, ?, ?, ?)
-    `);
-    
-    bewertungen.reviews.forEach(review => {
-      insertStmt.run(
-        review.author,
-        review.date,
-        review.rating,
-        review.comment
-      );
-    });
-    
-    console.log(`Migrierte ${bewertungen.reviews.length} Bewertungen in die Datenbank.`);
-  } catch (error) {
-    console.error('Fehler bei der Migration der Bewertungen:', error);
-  }
-}
 
 app.use((req, res) => {
   if (req.originalUrl.startsWith('/api/')) {
