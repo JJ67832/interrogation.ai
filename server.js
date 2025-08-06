@@ -8,100 +8,39 @@ const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const nodemailer = require('nodemailer');
+const Database = require('better-sqlite3'); // Hinzugefügt
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Dateipfade für Bewertungen und Backups
-const BEWERTUNGEN_FILE = path.join(__dirname, 'bewertungen.json');
-const BACKUP_DIR = path.join(__dirname, 'backups');
+// Datenbank initialisieren
+const db = new Database('bewertungen.db');
 
-// Backup-Verzeichnis erstellen, falls nicht vorhanden
-if (!fs.existsSync(BACKUP_DIR)) {
-  fs.mkdirSync(BACKUP_DIR);
-}
+// Tabelle für Bewertungen erstellen (falls nicht vorhanden)
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS bewertungen (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    author TEXT NOT NULL,
+    date TEXT NOT NULL,
+    rating INTEGER NOT NULL,
+    comment TEXT NOT NULL
+  )
+`).run();
 
-// Funktion zum Laden der Bewertungen mit Backup-Wiederherstellung
-function loadReviews() {
-  try {
-    if (fs.existsSync(BEWERTUNGEN_FILE)) {
-      const data = fs.readFileSync(BEWERTUNGEN_FILE, 'utf8');
-      return JSON.parse(data);
-    }
+// Funktion zum Lesen der Bewertungen (jetzt aus der Datenbank)
+function getAggregatedReviews() {
+  const reviews = db.prepare('SELECT * FROM bewertungen').all();
+  const reviewCount = reviews.length;
+  const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+  const ratingValue = reviewCount > 0 
+    ? Math.round((totalRating / reviewCount) * 10) / 10 
+    : 0;
     
-    // Wenn keine Hauptdatei existiert, versuche das neueste Backup zu laden
-    const backupFiles = fs.readdirSync(BACKUP_DIR)
-      .filter(file => file.startsWith('bewertungen-') && file.endsWith('.json'))
-      .sort()
-      .reverse();
-      
-    if (backupFiles.length > 0) {
-      const latestBackup = path.join(BACKUP_DIR, backupFiles[0]);
-      const backupData = fs.readFileSync(latestBackup, 'utf8');
-      
-      // Wiederherstellen der Hauptdatei aus Backup
-      fs.writeFileSync(BEWERTUNGEN_FILE, backupData, 'utf8');
-      return JSON.parse(backupData);
-    }
-  } catch (error) {
-    console.error('Fehler beim Laden der Bewertungen:', error);
-    
-    // Versuche ein Backup zu laden, wenn Hauptdatei beschädigt ist
-    try {
-      const backupFiles = fs.readdirSync(BACKUP_DIR)
-        .filter(file => file.startsWith('bewertungen-') && file.endsWith('.json'))
-        .sort()
-        .reverse();
-        
-      if (backupFiles.length > 0) {
-        const latestBackup = path.join(BACKUP_DIR, backupFiles[0]);
-        const backupData = fs.readFileSync(latestBackup, 'utf8');
-        
-        // Wiederherstellen der Hauptdatei aus Backup
-        fs.writeFileSync(BEWERTUNGEN_FILE, backupData, 'utf8');
-        return JSON.parse(backupData);
-      }
-    } catch (backupError) {
-      console.error('Fehler beim Laden des Backups:', backupError);
-    }
-  }
-  
-  // Fallback: Leere Bewertungsstruktur
   return {
-    ratingValue: 0,
-    reviewCount: 0,
-    reviews: []
+    ratingValue,
+    reviewCount,
+    reviews
   };
-}
-
-// Funktion zum Speichern mit Backup
-function saveReviews(reviews) {
-  try {
-    // Backup der aktuellen Datei erstellen
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const backupPath = path.join(BACKUP_DIR, `bewertungen-${timestamp}.json`);
-    
-    if (fs.existsSync(BEWERTUNGEN_FILE)) {
-      fs.copyFileSync(BEWERTUNGEN_FILE, backupPath);
-    }
-    
-    // Neue Bewertungen speichern
-    fs.writeFileSync(BEWERTUNGEN_FILE, JSON.stringify(reviews, null, 2), 'utf8');
-    
-    // Alte Backups aufräumen (nur die letzten 7 behalten)
-    const backupFiles = fs.readdirSync(BACKUP_DIR)
-      .filter(file => file.startsWith('bewertungen-') && file.endsWith('.json'))
-      .sort()
-      .reverse();
-    
-    if (backupFiles.length > 7) {
-      for (let i = 7; i < backupFiles.length; i++) {
-        fs.unlinkSync(path.join(BACKUP_DIR, backupFiles[i]));
-      }
-    }
-  } catch (error) {
-    console.error('Fehler beim Speichern der Bewertungen:', error);
-  }
 }
 
 // Proxy-Support für Render aktivieren
@@ -753,18 +692,10 @@ app.post('/api/check-spin-limit', (req, res) => {
   res.json({ remaining: 5 - req.session.spinCount });
 });
 
-// API-Endpunkte für Bewertungen mit Backup-System
+// Bewertungs-Endpunkte mit Datenbank
 app.get('/api/bewertungen', (req, res) => {
   try {
-    const bewertungen = loadReviews();
-    
-    // Aggregierte Werte berechnen
-    bewertungen.reviewCount = bewertungen.reviews.length;
-    const totalRating = bewertungen.reviews.reduce((sum, review) => sum + review.rating, 0);
-    bewertungen.ratingValue = bewertungen.reviewCount > 0 
-      ? Math.round((totalRating / bewertungen.reviewCount) * 10) / 10 
-      : 0;
-    
+    const bewertungen = getAggregatedReviews();
     res.json(bewertungen);
   } catch (error) {
     console.error('Fehler beim Laden der Bewertungen:', error);
@@ -776,29 +707,26 @@ app.post('/api/bewertungen', (req, res) => {
   try {
     const newReview = req.body;
     
-    // Validierung
     if (!newReview.author || !newReview.rating || !newReview.comment) {
       return res.status(400).json({ error: 'Ungültige Bewertungsdaten' });
     }
     
-    // Datum hinzufügen
-    newReview.date = new Date().toISOString().split('T')[0];
+    newReview.date = newReview.date || new Date().toISOString().split('T')[0];
     
-    // Bewertungen laden
-    const bewertungen = loadReviews();
+    // In die Datenbank einfügen
+    const stmt = db.prepare(`
+      INSERT INTO bewertungen (author, date, rating, comment)
+      VALUES (?, ?, ?, ?)
+    `);
     
-    // Neue Bewertung hinzufügen
-    bewertungen.reviews.push(newReview);
+    const result = stmt.run(
+      newReview.author,
+      newReview.date,
+      newReview.rating,
+      newReview.comment
+    );
     
-    // Speichern mit Backup
-    saveReviews(bewertungen);
-    
-    // Aggregierte Werte berechnen
-    bewertungen.reviewCount = bewertungen.reviews.length;
-    const totalRating = bewertungen.reviews.reduce((sum, review) => sum + review.rating, 0);
-    bewertungen.ratingValue = bewertungen.reviewCount > 0 
-      ? Math.round((totalRating / bewertungen.reviewCount) * 10) / 10 
-      : 0;
+    const bewertungen = getAggregatedReviews();
     
     res.json({ 
       success: true, 
@@ -816,7 +744,7 @@ app.post('/api/bewertungen', (req, res) => {
 
 app.get('/api/structured-data', (req, res) => {
   try {
-    const bewertungen = loadReviews();
+    const bewertungen = getAggregatedReviews();
     
     const latestReviews = [...bewertungen.reviews]
       .sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -851,6 +779,33 @@ app.get('/api/structured-data', (req, res) => {
   }
 });
 
+// Migration der bestehenden Bewertungen
+const rowCount = db.prepare('SELECT COUNT(*) as count FROM bewertungen').get().count;
+if (rowCount === 0) {
+  try {
+    const data = fs.readFileSync(path.join(__dirname, 'bewertungen.json'), 'utf8');
+    const bewertungen = JSON.parse(data);
+    
+    const insertStmt = db.prepare(`
+      INSERT INTO bewertungen (author, date, rating, comment)
+      VALUES (?, ?, ?, ?)
+    `);
+    
+    bewertungen.reviews.forEach(review => {
+      insertStmt.run(
+        review.author,
+        review.date,
+        review.rating,
+        review.comment
+      );
+    });
+    
+    console.log(`Migrierte ${bewertungen.reviews.length} Bewertungen in die Datenbank.`);
+  } catch (error) {
+    console.error('Fehler bei der Migration der Bewertungen:', error);
+  }
+}
+
 app.use((req, res) => {
   if (req.originalUrl.startsWith('/api/')) {
     res.status(404).json({ error: 'API-Route nicht gefunden' });
@@ -859,19 +814,6 @@ app.use((req, res) => {
   }
 });
 
-// Tägliches Backup planen
-setInterval(() => {
-  try {
-    const bewertungen = loadReviews();
-    saveReviews(bewertungen);
-    console.log('Tägliches Backup der Bewertungen erstellt');
-  } catch (error) {
-    console.error('Fehler beim täglichen Backup:', error);
-  }
-}, 24 * 60 * 60 * 1000); // 24 Stunden
-
 app.listen(PORT, () => {
   console.log(`Server läuft auf http://localhost:${PORT}`);
-  console.log(`Bewertungsspeicher: ${BEWERTUNGEN_FILE}`);
-  console.log(`Backup-Verzeichnis: ${BACKUP_DIR}`);
 });
