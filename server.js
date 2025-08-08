@@ -12,21 +12,17 @@ const nodemailer = require('nodemailer');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Proxy-Support für Render aktivieren
 app.set('trust proxy', 1);
 
-// CORS-Einstellungen für Produktion
 app.use((req, res, next) => {
   const allowedOrigins = [
     'http://localhost:3000',
     'https://interrogation-ai-3.onrender.com'
   ];
-  
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
   }
-  
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -37,12 +33,11 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 
-// Session-Konfiguration für Produktion
 app.use(session({
   secret: process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex'),
   resave: false,
   saveUninitialized: false,
-  proxy: true, // Wichtig für Reverse-Proxy
+  proxy: true,
   cookie: { 
     secure: process.env.NODE_ENV === 'production',
     maxAge: 24 * 60 * 60 * 1000,
@@ -55,7 +50,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Google Strategy mit dynamischer Callback-URL
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -94,22 +88,11 @@ passport.deserializeUser((id, done) => {
   done(null, user);
 });
 
-app.get('/auth/google',
-  passport.authenticate('google', { 
-    scope: ['profile', 'email'],
-    prompt: 'select_account' 
-  })
-);
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'], prompt: 'select_account' }));
 
-app.get('/auth/google/callback',
-  passport.authenticate('google', { 
-    failureRedirect: '/html/account.html',
-    session: true 
-  }),
+app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/html/account.html', session: true }),
   (req, res) => {
-    // Flag für Willkommens-Popup setzen
     req.session.showWelcomePopup = true;
-    // Weiterleitung zum Tools-Fragebogen
     res.redirect('/html/tools-fragebogen.html');
   }
 );
@@ -164,10 +147,7 @@ app.post('/api/auth/register', (req, res) => {
   saveUsers(users);
   
   req.session.user = { id: newUser.id, email: newUser.email };
-  // Flag für Willkommens-Popup setzen
   req.session.showWelcomePopup = true;
-  
-  // Weiterleitung zum Tools-Fragebogen
   res.redirect('/html/tools-fragebogen.html');
 });
 
@@ -179,9 +159,7 @@ app.post('/api/auth/login', (req, res) => {
   
   if (user) {
     req.session.user = { id: user.id, email: user.email };
-    // Flag für Willkommens-Popup setzen
     req.session.showWelcomePopup = true;
-    // Weiterleitung zum Tools-Fragebogen
     res.redirect('/html/tools-fragebogen.html');
   } else {
     res.status(401).json({ error: 'Ungültige Anmeldedaten' });
@@ -198,7 +176,6 @@ app.post('/api/auth/logout', (req, res) => {
 
 app.get('/api/auth/status', (req, res) => {
   const user = req.user || req.session.user;
-  // Flag für Willkommens-Popup aus der Session lesen
   const showWelcomePopup = req.session.showWelcomePopup || false;
 
   if (user) {
@@ -209,10 +186,9 @@ app.get('/api/auth/status', (req, res) => {
       accountType: 'Kostenlos',
       googleId: user.googleId,
       name: user.name || user.email.split('@')[0],
-      showWelcomePopup: showWelcomePopup // Flag an Frontend senden
+      showWelcomePopup: showWelcomePopup
     };
     
-    // Flag SOFORT zurücksetzen nach dem Abruf
     if (req.session.showWelcomePopup) {
       delete req.session.showWelcomePopup;
     }
@@ -223,6 +199,142 @@ app.get('/api/auth/status', (req, res) => {
   }
 });
 
+// GitHub API Konfiguration
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+const REPO_OWNER = 'JJ67832';
+const REPO_NAME = 'bewertungen-db';
+const FILE_PATH = 'bewertungen.json';
+
+async function getFileSha() {
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+  const response = await fetch(url, {
+    headers: {
+      'Authorization': `token ${GITHUB_TOKEN}`,
+      'Accept': 'application/vnd.github.v3+json'
+    }
+  });
+  const data = await response.json();
+  return data.sha;
+}
+
+async function readBewertungen() {
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+  const response = await fetch(url, {
+    headers: {
+      'Authorization': `token ${GITHUB_TOKEN}`,
+      'Accept': 'application/vnd.github.v3+json'
+    }
+  });
+  const data = await response.json();
+  const content = Buffer.from(data.content, 'base64').toString('utf8');
+  return JSON.parse(content);
+}
+
+async function saveBewertungen(bewertungen) {
+  const content = Buffer.from(JSON.stringify(bewertungen, null, 2)).toString('base64');
+  const sha = await getFileSha();
+  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `token ${GITHUB_TOKEN}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      message: 'Update bewertungen.json',
+      content: content,
+      sha: sha
+    })
+  });
+  if (!response.ok) {
+    throw new Error('Fehler beim Speichern der Bewertungen');
+  }
+}
+
+app.get('/api/bewertungen', async (req, res) => {
+  try {
+    const bewertungen = await readBewertungen();
+    bewertungen.reviewCount = bewertungen.reviews.length;
+    const totalRating = bewertungen.reviews.reduce((sum, review) => sum + review.rating, 0);
+    bewertungen.ratingValue = Math.round((totalRating / bewertungen.reviewCount) * 10) / 10;
+    res.json(bewertungen);
+  } catch (error) {
+    console.error('Fehler beim Lesen der Bewertungen:', error);
+    res.status(500).json({ error: 'Bewertungen konnten nicht geladen werden' });
+  }
+});
+
+app.post('/api/bewertungen', async (req, res) => {
+  try {
+    const newReview = req.body;
+    if (!newReview.author || !newReview.rating || !newReview.comment) {
+      return res.status(400).json({ error: 'Ungültige Bewertungsdaten' });
+    }
+    newReview.date = newReview.date || new Date().toISOString().split('T')[0];
+    const bewertungen = await readBewertungen();
+    bewertungen.reviews.push(newReview);
+    await saveBewertungen(bewertungen);
+    bewertungen.reviewCount = bewertungen.reviews.length;
+    const totalRating = bewertungen.reviews.reduce((sum, review) => sum + review.rating, 0);
+    bewertungen.ratingValue = Math.round((totalRating / bewertungen.reviewCount) * 10) / 10;
+    res.json({ 
+      success: true, 
+      review: newReview,
+      aggregated: {
+        ratingValue: bewertungen.ratingValue,
+        reviewCount: bewertungen.reviewCount
+      }
+    });
+  } catch (error) {
+    console.error('Fehler beim Speichern der Bewertung:', error);
+    res.status(500).json({ error: 'Bewertung konnte nicht gespeichert werden' });
+  }
+});
+
+app.get('/api/structured-data', async (req, res) => {
+  try {
+    const bewertungen = await readBewertungen();
+    bewertungen.reviewCount = bewertungen.reviews.length;
+    const totalRating = bewertungen.reviews.reduce((sum, review) => sum + review.rating, 0);
+    bewertungen.ratingValue = Math.round((totalRating / bewertungen.reviewCount) * 10) / 10;
+    
+    const latestReviews = [...bewertungen.reviews]
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 3);
+    
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Coding Project Helper",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": bewertungen.ratingValue,
+        "reviewCount": bewertungen.reviewCount,
+        "bestRating": 5
+      },
+      "review": latestReviews.map(review => ({
+        "@type": "Review",
+        "author": review.author,
+        "datePublished": review.date,
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": review.rating
+        },
+        "reviewBody": review.comment
+      }))
+    };
+    
+    res.json(structuredData);
+  } catch (error) {
+    console.error('Fehler beim Generieren der strukturierten Daten:', error);
+    res.status(500).json({ error: 'Strukturierte Daten konnten nicht generiert werden' });
+  }
+});
+
+// +++ ERGÄNZTE KOMPONENTEN AUS SERVER (6).js +++ //
+
+// Suchfunktion
 app.post('/search', (req, res) => {
   const searchTerm = req.body.term.toLowerCase();
   if (!searchTerm) return res.json([]);
@@ -356,6 +468,7 @@ app.post('/search', (req, res) => {
   res.json(results);
 });
 
+// Tool-Endpunkte
 app.post('/api/ask', async (req, res) => {
   try {
     if (!req.session.requestCount) req.session.requestCount = 0;
@@ -594,6 +707,7 @@ Unsicherheiten: ${unsicherheiten}
   }
 });
 
+// Cookie-Handling
 app.get('/api/cookies/accept', (req, res) => {
   res.cookie('cookieConsent', 'accepted', { 
     maxAge: 365 * 24 * 60 * 60 * 1000,
@@ -614,6 +728,7 @@ app.get('/api/cookies/decline', (req, res) => {
   res.json({ status: 'success' });
 });
 
+// Kontaktformular
 app.post('/api/kontakt', (req, res) => {
   const { name, email, betreff, nachricht } = req.body;
   
@@ -645,6 +760,7 @@ app.post('/api/kontakt', (req, res) => {
   });
 });
 
+// Spin-Limit-Check
 app.post('/api/check-spin-limit', (req, res) => {
   if (req.user || req.session.user) return res.json({ unlimited: true });
 
@@ -661,106 +777,7 @@ app.post('/api/check-spin-limit', (req, res) => {
   res.json({ remaining: 5 - req.session.spinCount });
 });
 
-const BEWERTUNGEN_FILE = path.join(__dirname, 'bewertungen.json');
-
-function getAggregatedReviews() {
-  try {
-    const data = fs.readFileSync(BEWERTUNGEN_FILE, 'utf8');
-    const bewertungen = JSON.parse(data);
-    
-    bewertungen.reviewCount = bewertungen.reviews.length;
-    
-    const totalRating = bewertungen.reviews.reduce((sum, review) => sum + review.rating, 0);
-    bewertungen.ratingValue = Math.round((totalRating / bewertungen.reviewCount) * 10) / 10;
-    
-    return bewertungen;
-  } catch (error) {
-    console.error('Fehler beim Lesen der Bewertungen:', error);
-    return {
-      ratingValue: 0,
-      reviewCount: 0,
-      reviews: []
-    };
-  }
-}
-
-app.get('/api/bewertungen', (req, res) => {
-  try {
-    const bewertungen = getAggregatedReviews();
-    res.json(bewertungen);
-  } catch (error) {
-    console.error('Fehler beim Lesen der Bewertungen:', error);
-    res.status(500).json({ error: 'Bewertungen konnten nicht geladen werden' });
-  }
-});
-
-app.post('/api/bewertungen', (req, res) => {
-  try {
-    const newReview = req.body;
-    
-    if (!newReview.author || !newReview.rating || !newReview.comment) {
-      return res.status(400).json({ error: 'Ungültige Bewertungsdaten' });
-    }
-    
-    newReview.date = newReview.date || new Date().toISOString().split('T')[0];
-    
-    const bewertungen = getAggregatedReviews();
-    
-    bewertungen.reviews.push(newReview);
-    
-    fs.writeFileSync(BEWERTUNGEN_FILE, JSON.stringify(bewertungen, null, 2), 'utf8');
-    
-    res.json({ 
-      success: true, 
-      review: newReview,
-      aggregated: {
-        ratingValue: bewertungen.ratingValue,
-        reviewCount: bewertungen.reviewCount
-      }
-    });
-  } catch (error) {
-    console.error('Fehler beim Speichern der Bewertung:', error);
-    res.status(500).json({ error: 'Bewertung konnte nicht gespeichert werden' });
-  }
-});
-
-app.get('/api/structured-data', (req, res) => {
-  try {
-    const bewertungen = getAggregatedReviews();
-    
-    const latestReviews = [...bewertungen.reviews]
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .slice(0, 3);
-    
-    const structuredData = {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "Coding Project Helper",
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": bewertungen.ratingValue,
-        "reviewCount": bewertungen.reviewCount,
-        "bestRating": 5
-      },
-      "review": latestReviews.map(review => ({
-        "@type": "Review",
-        "author": review.author,
-        "datePublished": review.date,
-        "reviewRating": {
-          "@type": "Rating",
-          "ratingValue": review.rating
-        },
-        "reviewBody": review.comment
-      }))
-    };
-    
-    res.json(structuredData);
-  } catch (error) {
-    console.error('Fehler beim Generieren der strukturierten Daten:', error);
-    res.status(500).json({ error: 'Strukturierte Daten konnten nicht generiert werden' });
-  }
-});
-
+// Error Handling
 app.use((req, res) => {
   if (req.originalUrl.startsWith('/api/')) {
     res.status(404).json({ error: 'API-Route nicht gefunden' });
