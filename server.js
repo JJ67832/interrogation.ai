@@ -12,6 +12,17 @@ const nodemailer = require('nodemailer');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// GitHub API Konfiguration
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+if (!GITHUB_TOKEN) {
+  console.error('FEHLER: GITHUB_TOKEN nicht gesetzt!');
+  process.exit(1);
+}
+
+const REPO_OWNER = 'JJ67832';
+const REPO_NAME = 'bewertungen-db';
+const FILE_PATH = 'bewertungen.json';
+
 app.set('trust proxy', 1);
 
 app.use((req, res, next) => {
@@ -88,133 +99,29 @@ passport.deserializeUser((id, done) => {
   done(null, user);
 });
 
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'], prompt: 'select_account' }));
-
-app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/html/account.html', session: true }),
-  (req, res) => {
-    req.session.showWelcomePopup = true;
-    res.redirect('/html/tools-fragebogen.html');
-  }
-);
-
-app.get('/auth/logout', (req, res) => {
-  req.logout(err => {
-    if (err) return res.status(500).json({ error: 'Abmeldung fehlgeschlagen' });
-    req.session.destroy(() => {
-      res.clearCookie('connect.sid');
-      res.redirect('/');
-    });
-  });
-});
-
-const USERS_FILE = path.join(__dirname, 'users.json');
-
-function readUsers() {
-  try {
-    if (fs.existsSync(USERS_FILE)) {
-      return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
-    }
-  } catch (error) {
-    console.error('Fehler beim Lesen der Benutzerdaten:', error);
-  }
-  return [];
-}
-
-function saveUsers(users) {
-  try {
-    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf8');
-  } catch (error) {
-    console.error('Fehler beim Speichern der Benutzerdaten:', error);
-  }
-}
-
-app.post('/api/auth/register', (req, res) => {
-  const { email, password } = req.body;
-  const users = readUsers();
-  
-  if (users.some(user => user.email === email)) {
-    return res.status(400).json({ error: 'Benutzer existiert bereits' });
-  }
-  
-  const newUser = {
-    id: crypto.randomBytes(16).toString('hex'),
-    email,
-    password,
-    created: new Date().toISOString()
-  };
-  
-  users.push(newUser);
-  saveUsers(users);
-  
-  req.session.user = { id: newUser.id, email: newUser.email };
-  req.session.showWelcomePopup = true;
-  res.redirect('/html/tools-fragebogen.html');
-});
-
-app.post('/api/auth/login', (req, res) => {
-  const { email, password } = req.body;
-  const users = readUsers();
-  
-  const user = users.find(u => u.email === email && u.password === password);
-  
-  if (user) {
-    req.session.user = { id: user.id, email: user.email };
-    req.session.showWelcomePopup = true;
-    res.redirect('/html/tools-fragebogen.html');
-  } else {
-    res.status(401).json({ error: 'Ungültige Anmeldedaten' });
-  }
-});
-
-app.post('/api/auth/logout', (req, res) => {
-  req.session.destroy(err => {
-    if (err) return res.status(500).json({ error: 'Abmeldung fehlgeschlagen' });
-    res.clearCookie('connect.sid');
-    res.json({ success: true });
-  });
-});
-
-app.get('/api/auth/status', (req, res) => {
-  const user = req.user || req.session.user;
-  const showWelcomePopup = req.session.showWelcomePopup || false;
-
-  if (user) {
-    const userData = {
-      id: user.id,
-      email: user.email,
-      created: user.created || new Date().toISOString(),
-      accountType: 'Kostenlos',
-      googleId: user.googleId,
-      name: user.name || user.email.split('@')[0],
-      showWelcomePopup: showWelcomePopup
-    };
-    
-    if (req.session.showWelcomePopup) {
-      delete req.session.showWelcomePopup;
-    }
-    
-    res.json(userData);
-  } else {
-    res.status(401).json({ error: 'Nicht angemeldet' });
-  }
-});
-
-// GitHub API Konfiguration
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const REPO_OWNER = 'JJ67832';
-const REPO_NAME = 'bewertungen-db';
-const FILE_PATH = 'bewertungen.json';
-
+// GitHub-Bewertungsfunktionen
 async function getFileSha() {
   const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
-  const response = await fetch(url, {
-    headers: {
-      'Authorization': `token ${GITHUB_TOKEN}`,
-      'Accept': 'application/vnd.github.v3+json'
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+    
+    if (response.status === 404) return null;
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`GitHub API error: ${response.status} - ${errText}`);
     }
-  });
-  const data = await response.json();
-  return data.sha;
+    
+    const data = await response.json();
+    return data.sha;
+  } catch (error) {
+    console.error('Fehler beim Abrufen des Datei-SHA:', error);
+    throw error;
+  }
 }
 
 async function readBewertungen() {
@@ -225,6 +132,12 @@ async function readBewertungen() {
       'Accept': 'application/vnd.github.v3+json'
     }
   });
+  
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`GitHub API error: ${response.status} - ${errText}`);
+  }
+  
   const data = await response.json();
   const content = Buffer.from(data.content, 'base64').toString('utf8');
   return JSON.parse(content);
@@ -234,6 +147,13 @@ async function saveBewertungen(bewertungen) {
   const content = Buffer.from(JSON.stringify(bewertungen, null, 2)).toString('base64');
   const sha = await getFileSha();
   const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+  
+  const body = {
+    message: 'Update bewertungen.json',
+    content: content,
+    ...(sha && { sha: sha }) // SHA nur senden wenn vorhanden
+  };
+
   const response = await fetch(url, {
     method: 'PUT',
     headers: {
@@ -241,17 +161,16 @@ async function saveBewertungen(bewertungen) {
       'Accept': 'application/vnd.github.v3+json',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      message: 'Update bewertungen.json',
-      content: content,
-      sha: sha
-    })
+    body: JSON.stringify(body)
   });
+  
   if (!response.ok) {
-    throw new Error('Fehler beim Speichern der Bewertungen');
+    const errorData = await response.json();
+    throw new Error(`Fehler beim Speichern: ${errorData.message}`);
   }
 }
 
+// Bewertungs-Endpunkte
 app.get('/api/bewertungen', async (req, res) => {
   try {
     const bewertungen = await readBewertungen();
@@ -271,13 +190,18 @@ app.post('/api/bewertungen', async (req, res) => {
     if (!newReview.author || !newReview.rating || !newReview.comment) {
       return res.status(400).json({ error: 'Ungültige Bewertungsdaten' });
     }
+    
     newReview.date = newReview.date || new Date().toISOString().split('T')[0];
+    
     const bewertungen = await readBewertungen();
     bewertungen.reviews.push(newReview);
+    
     await saveBewertungen(bewertungen);
+    
     bewertungen.reviewCount = bewertungen.reviews.length;
     const totalRating = bewertungen.reviews.reduce((sum, review) => sum + review.rating, 0);
     bewertungen.ratingValue = Math.round((totalRating / bewertungen.reviewCount) * 10) / 10;
+    
     res.json({ 
       success: true, 
       review: newReview,
@@ -287,7 +211,11 @@ app.post('/api/bewertungen', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Fehler beim Speichern der Bewertung:', error);
+    console.error('Fehler beim Speichern der Bewertung:', {
+      error: error.message,
+      stack: error.stack,
+      review: newReview
+    });
     res.status(500).json({ error: 'Bewertung konnte nicht gespeichert werden' });
   }
 });
