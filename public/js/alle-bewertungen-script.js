@@ -1,12 +1,9 @@
-// public/js/alle-bewertungen-script.js
 document.addEventListener('DOMContentLoaded', () => {
-  // Konfiguration
   const reviewsPerPage = 15;
   let currentPage = 1;
   let allReviews = [];
   let filteredReviews = [];
   
-  // DOM-Elemente
   const reviewsGrid = document.getElementById('reviews-grid');
   const loadMoreBtn = document.getElementById('load-more-btn');
   const ratingFilter = document.getElementById('rating-filter');
@@ -17,46 +14,44 @@ document.addEventListener('DOMContentLoaded', () => {
   const reviewForm = document.getElementById('review-form');
   const formMessage = document.getElementById('form-message');
   
-  // Bewertungen laden
   async function loadReviews() {
     try {
-      // Zeige Ladeanzeige an
       reviewsGrid.innerHTML = '<div class="loading">Bewertungen werden geladen...</div>';
       
-      // Verwende die API-Route, um Bewertungen zu erhalten
       const response = await fetch('/api/bewertungen');
-      if (!response.ok) throw new Error('Daten konnten nicht geladen werden');
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Serverfehler: ${response.status} - ${errorText}`);
+      }
       
       const data = await response.json();
-      allReviews = data.reviews;  // Beachte: Die API gibt ein Objekt mit 'reviews' zurück
+      allReviews = data.reviews || [];
       filteredReviews = [...allReviews];
       
       applyFilters();
       displayReviews();
     } catch (error) {
       console.error('Fehler beim Laden der Bewertungen:', error);
-      reviewsGrid.innerHTML = `<div class="error-message">Bewertungen konnten nicht geladen werden: ${error.message}</div>`;
+      reviewsGrid.innerHTML = `
+        <div class="error-message">
+          Bewertungen konnten nicht geladen werden: ${error.message}
+        </div>
+      `;
     }
   }
   
-  // Filter anwenden
   function applyFilters() {
     const ratingValue = parseInt(ratingFilter.value);
     const authorSearch = searchAuthor.value.toLowerCase();
     
     filteredReviews = allReviews.filter(review => {
-      // Filter nach Bewertung
       if (ratingValue > 0 && review.rating !== ratingValue) return false;
-      
-      // Filter nach Autor
       if (authorSearch && !review.author.toLowerCase().includes(authorSearch)) {
         return false;
       }
-      
       return true;
     });
     
-    // Sortierung anwenden
     const sortValue = sortBy.value;
     switch (sortValue) {
       case 'newest':
@@ -76,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
     currentPage = 1;
   }
   
-  // Bewertungen anzeigen (KORRIGIERTE STERNE-DARSTELLUNG)
   function displayReviews() {
     const startIndex = 0;
     const endIndex = currentPage * reviewsPerPage;
@@ -94,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const reviewCard = document.createElement('div');
       reviewCard.className = 'review-card';
       
-      // KORRIGIERT: Sterne generierung mit ★ und ☆
       let starsHtml = '';
       for (let i = 0; i < 5; i++) {
         starsHtml += `<span class="star">${i < review.rating ? '★' : '☆'}</span>`;
@@ -112,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
       reviewsGrid.appendChild(reviewCard);
     });
     
-    // "Mehr anzeigen"-Button anpassen
     if (endIndex >= filteredReviews.length) {
       loadMoreBtn.disabled = true;
       loadMoreBtn.textContent = 'Alle Bewertungen angezeigt';
@@ -123,17 +115,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   
-  // Datum formatieren (TT.MM.JJJJ)
   function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('de-DE', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
+    try {
+      const date = new Date(dateString);
+      return isNaN(date) ? dateString : date.toLocaleDateString('de-DE', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    } catch {
+      return dateString;
+    }
   }
   
-  // Neue Bewertung absenden
   async function submitReview(event) {
     event.preventDefault();
     
@@ -141,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const rating = document.querySelector('input[name="rating"]:checked')?.value;
     const comment = document.getElementById('review-comment').value;
     
-    // Validierung
     if (!author || !rating || !comment) {
       showMessage('Bitte fülle alle Felder aus', 'error');
       return;
@@ -151,21 +144,17 @@ document.addEventListener('DOMContentLoaded', () => {
       author,
       rating: parseInt(rating),
       comment,
-      date: new Date().toISOString().split('T')[0] // Aktuelles Datum im Format YYYY-MM-DD
+      date: new Date().toISOString().split('T')[0]
     };
     
     try {
-      // Formular deaktivieren während der Verarbeitung
       const submitBtn = reviewForm.querySelector('button[type="submit"]');
       submitBtn.disabled = true;
       submitBtn.textContent = 'Wird gesendet...';
       
-      // Bewertung zum Server senden
       const response = await fetch('/api/bewertungen', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newReview)
       });
       
@@ -174,13 +163,9 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(errorData.error || 'Fehler beim Speichern der Bewertung');
       }
       
-      // Erfolgsmeldung anzeigen
       showMessage('Vielen Dank für deine Bewertung! Sie wird nach Prüfung veröffentlicht.', 'success');
-      
-      // Formular zurücksetzen
       reviewForm.reset();
       
-      // Bewertungen neu laden (nach kurzer Verzögerung)
       setTimeout(() => {
         loadReviews();
         submitBtn.disabled = false;
@@ -191,20 +176,17 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Fehler:', error);
       showMessage(`Fehler: ${error.message}`, 'error');
       
-      // Formular wieder aktivieren
       const submitBtn = reviewForm.querySelector('button[type="submit"]');
       submitBtn.disabled = false;
       submitBtn.textContent = 'Bewertung absenden';
     }
   }
   
-  // Formular-Nachricht anzeigen
   function showMessage(text, type) {
     formMessage.textContent = text;
     formMessage.className = `form-message ${type}`;
     formMessage.style.display = 'block';
     
-    // Nachricht nach 5 Sekenden ausblenden
     setTimeout(() => {
       formMessage.style.display = 'none';
     }, 5000);
@@ -229,7 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
     displayReviews();
   });
   
-  // Enter-Taste in Suchfeld
   searchAuthor.addEventListener('keyup', (event) => {
     if (event.key === 'Enter') {
       applyFilters();
