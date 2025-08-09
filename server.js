@@ -12,8 +12,8 @@ const nodemailer = require('nodemailer');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// GitHub API Konfiguration
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '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';
+// GitHub API Konfiguration (Sicherheit verbessert)
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 if (!GITHUB_TOKEN) {
   console.error('FEHLER: GITHUB_TOKEN nicht gesetzt!');
   process.exit(1);
@@ -99,13 +99,13 @@ passport.deserializeUser((id, done) => {
   done(null, user);
 });
 
-// GitHub-Bewertungsfunktionen mit Token-Trim
+// GitHub-Bewertungsfunktionen mit korrigiertem Authorization-Header
 async function getFileSha() {
   const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
   try {
     const response = await fetch(url, {
       headers: {
-        'Authorization': `token ${GITHUB_TOKEN.trim()}`,
+        'Authorization': `Bearer ${GITHUB_TOKEN.trim()}`, // Korrigiert: token → Bearer
         'Accept': 'application/vnd.github.v3+json',
         'User-Agent': 'Interrogation-AI-Server'
       }
@@ -129,7 +129,7 @@ async function readBewertungen() {
   const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
   const response = await fetch(url, {
     headers: {
-      'Authorization': `token ${GITHUB_TOKEN.trim()}`,
+      'Authorization': `Bearer ${GITHUB_TOKEN.trim()}`, // Korrigiert: token → Bearer
       'Accept': 'application/vnd.github.v3+json',
       'User-Agent': 'Interrogation-AI-Server'
     }
@@ -159,7 +159,7 @@ async function saveBewertungen(bewertungen) {
   const response = await fetch(url, {
     method: 'PUT',
     headers: {
-      'Authorization': `token ${GITHUB_TOKEN.trim()}`,
+      'Authorization': `Bearer ${GITHUB_TOKEN.trim()}`, // Korrigiert: token → Bearer
       'Accept': 'application/vnd.github.v3+json',
       'Content-Type': 'application/json',
       'User-Agent': 'Interrogation-AI-Server'
@@ -173,14 +173,14 @@ async function saveBewertungen(bewertungen) {
   }
 }
 
-// Debug-Endpunkt mit Token-Trim
+// Debug-Endpunkt mit korrigiertem Header
 app.get('/api/debug', async (req, res) => {
   try {
     const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
     
     const response = await fetch(url, {
       headers: {
-        'Authorization': `token ${GITHUB_TOKEN.trim()}`,
+        'Authorization': `Bearer ${GITHUB_TOKEN.trim()}`, // Korrigiert: token → Bearer
         'Accept': 'application/vnd.github.v3+json',
         'User-Agent': 'Interrogation-AI-Server'
       }
@@ -215,7 +215,7 @@ app.get('/api/debug', async (req, res) => {
   }
 });
 
-// Bewertungs-Endpunkte
+// Bewertungs-Endpunkte (unverändert)
 app.get('/api/bewertungen', async (req, res) => {
   try {
     const bewertungen = await readBewertungen();
