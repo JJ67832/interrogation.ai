@@ -13,7 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // GitHub API Konfiguration
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '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';
 if (!GITHUB_TOKEN) {
   console.error('FEHLER: GITHUB_TOKEN nicht gesetzt!');
   process.exit(1);
@@ -99,13 +99,13 @@ passport.deserializeUser((id, done) => {
   done(null, user);
 });
 
-// GitHub-Bewertungsfunktionen
+// GitHub-Bewertungsfunktionen mit Token-Trim
 async function getFileSha() {
   const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
   try {
     const response = await fetch(url, {
       headers: {
-        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Authorization': `token ${GITHUB_TOKEN.trim()}`,
         'Accept': 'application/vnd.github.v3+json',
         'User-Agent': 'Interrogation-AI-Server'
       }
@@ -129,7 +129,7 @@ async function readBewertungen() {
   const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
   const response = await fetch(url, {
     headers: {
-      'Authorization': `token ${GITHUB_TOKEN}`,
+      'Authorization': `token ${GITHUB_TOKEN.trim()}`,
       'Accept': 'application/vnd.github.v3+json',
       'User-Agent': 'Interrogation-AI-Server'
     }
@@ -153,13 +153,13 @@ async function saveBewertungen(bewertungen) {
   const body = {
     message: 'Update bewertungen.json',
     content: content,
-    ...(sha && { sha: sha }) // SHA nur senden wenn vorhanden
+    ...(sha && { sha: sha })
   };
 
   const response = await fetch(url, {
     method: 'PUT',
     headers: {
-      'Authorization': `token ${GITHUB_TOKEN}`,
+      'Authorization': `token ${GITHUB_TOKEN.trim()}`,
       'Accept': 'application/vnd.github.v3+json',
       'Content-Type': 'application/json',
       'User-Agent': 'Interrogation-AI-Server'
@@ -173,14 +173,14 @@ async function saveBewertungen(bewertungen) {
   }
 }
 
-// Debug-Endpunkt für GitHub-Zugriff
+// Debug-Endpunkt mit Token-Trim
 app.get('/api/debug', async (req, res) => {
   try {
     const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
     
     const response = await fetch(url, {
       headers: {
-        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Authorization': `token ${GITHUB_TOKEN.trim()}`,
         'Accept': 'application/vnd.github.v3+json',
         'User-Agent': 'Interrogation-AI-Server'
       }
@@ -224,12 +224,7 @@ app.get('/api/bewertungen', async (req, res) => {
     bewertungen.ratingValue = Math.round((totalRating / bewertungen.reviewCount) * 10) / 10;
     res.json(bewertungen);
   } catch (error) {
-    console.error('Fehler beim Lesen der Bewertungen:', {
-      error: error.message,
-      stack: error.stack,
-      repo: `${REPO_OWNER}/${REPO_NAME}`,
-      file: FILE_PATH
-    });
+    console.error('Fehler beim Lesen der Bewertungen:', error);
     res.status(500).json({ 
       error: 'Bewertungen konnten nicht geladen werden',
       details: error.message
