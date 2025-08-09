@@ -106,7 +106,8 @@ async function getFileSha() {
     const response = await fetch(url, {
       headers: {
         'Authorization': `token ${GITHUB_TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json'
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'Interrogation-AI-Server'
       }
     });
     
@@ -129,7 +130,8 @@ async function readBewertungen() {
   const response = await fetch(url, {
     headers: {
       'Authorization': `token ${GITHUB_TOKEN}`,
-      'Accept': 'application/vnd.github.v3+json'
+      'Accept': 'application/vnd.github.v3+json',
+      'User-Agent': 'Interrogation-AI-Server'
     }
   });
   
@@ -159,7 +161,8 @@ async function saveBewertungen(bewertungen) {
     headers: {
       'Authorization': `token ${GITHUB_TOKEN}`,
       'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'User-Agent': 'Interrogation-AI-Server'
     },
     body: JSON.stringify(body)
   });
@@ -170,6 +173,48 @@ async function saveBewertungen(bewertungen) {
   }
 }
 
+// Debug-Endpunkt für GitHub-Zugriff
+app.get('/api/debug', async (req, res) => {
+  try {
+    const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+    
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'Interrogation-AI-Server'
+      }
+    });
+    
+    if (!response.ok) {
+      const errText = await response.text();
+      return res.status(response.status).json({
+        error: `GitHub API error: ${response.status}`,
+        message: errText,
+        url: url,
+        repo: `${REPO_OWNER}/${REPO_NAME}`,
+        file: FILE_PATH
+      });
+    }
+    
+    const data = await response.json();
+    res.json({
+      status: 'success',
+      sha: data.sha,
+      size: data.size,
+      download_url: data.download_url,
+      content_length: data.content.length,
+      encoding: data.encoding
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: 'Internal server error',
+      message: error.message,
+      stack: error.stack
+    });
+  }
+});
+
 // Bewertungs-Endpunkte
 app.get('/api/bewertungen', async (req, res) => {
   try {
@@ -179,8 +224,16 @@ app.get('/api/bewertungen', async (req, res) => {
     bewertungen.ratingValue = Math.round((totalRating / bewertungen.reviewCount) * 10) / 10;
     res.json(bewertungen);
   } catch (error) {
-    console.error('Fehler beim Lesen der Bewertungen:', error);
-    res.status(500).json({ error: 'Bewertungen konnten nicht geladen werden' });
+    console.error('Fehler beim Lesen der Bewertungen:', {
+      error: error.message,
+      stack: error.stack,
+      repo: `${REPO_OWNER}/${REPO_NAME}`,
+      file: FILE_PATH
+    });
+    res.status(500).json({ 
+      error: 'Bewertungen konnten nicht geladen werden',
+      details: error.message
+    });
   }
 });
 
@@ -216,7 +269,10 @@ app.post('/api/bewertungen', async (req, res) => {
       stack: error.stack,
       review: newReview
     });
-    res.status(500).json({ error: 'Bewertung konnte nicht gespeichert werden' });
+    res.status(500).json({ 
+      error: 'Bewertung konnte nicht gespeichert werden',
+      details: error.message
+    });
   }
 });
 
@@ -712,6 +768,15 @@ app.use((req, res) => {
   } else {
     res.status(404).sendFile(path.join(__dirname, 'public', 'html', '404.html'));
   }
+});
+
+// Uncaught Exception Handler
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
 app.listen(PORT, () => {
